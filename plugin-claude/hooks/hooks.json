@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NoLogo -NoProfile -NonInteractive -ExecutionPolicy RemoteSigned -File \"${CLAUDE_PLUGIN_ROOT}/scripts/agent-start.ps1\" -Agent claude",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

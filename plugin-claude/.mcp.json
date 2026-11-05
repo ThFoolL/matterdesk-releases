@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "matterdesk": {
+      "command": "powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "RemoteSigned",
+        "-File",
+        "${CLAUDE_PLUGIN_ROOT}/scripts/mcp.ps1"
+      ],
+      "env": {
+        "MATTERDESK_AGENT": "claude"
+      }
+    }
+  }
+}

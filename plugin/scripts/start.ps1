@@ -6,8 +6,8 @@ $installation = Get-Content -LiteralPath $registration -Raw -Encoding UTF8 | Con
 foreach ($target in @($installation.executable, $installation.entry, $installation.workingDirectory)) {
   if ($target -and ($target -match '["\r\n]' -or -not (Test-Path -LiteralPath $target))) { throw '暂时找不到事序的安装文件，请让 Agent 检查并修复安装。' }
 }
-$launch = '"' + $installation.executable + '"'
-if ($installation.entry) { $launch += ' "' + $installation.entry + '"' }
-$startup = New-CimInstance -ClassName Win32_ProcessStartup -ClientOnly -Property @{ ShowWindow = [uint16]1 }
-$result = Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{CommandLine=$launch;CurrentDirectory=$installation.workingDirectory;ProcessStartupInformation=$startup}
-if ($result.ReturnValue -ne 0) { throw '事序未能打开，请重试或让 Agent 检查安装。' }
+if ($installation.entry) {
+  Start-Process -FilePath $installation.executable -ArgumentList ('"' + $installation.entry + '"') -WorkingDirectory $installation.workingDirectory -WindowStyle Hidden
+} else {
+  Start-Process -FilePath $installation.executable -WorkingDirectory $installation.workingDirectory -WindowStyle Hidden
+}

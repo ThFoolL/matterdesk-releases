@@ -1,0 +1,21 @@
+事序使用许可
+
+你可以免费用于个人和公司内部工作，也可以分享完整、未经修改的安装包。
+分享时请保留随附的许可和版权说明。此许可不授予销售安装包、修改应用、
+使用品牌或获取应用开发源代码的权利。
+
+应用按现状提供。请使用自己的账号和授权，并选择适合处理工作资料的模型服务。
+第三方组件遵循各自的许可，完整条款随安装包提供。
+
+以下英文条款与上述说明一起适用：
+
+MatterDesk - Binary Distribution License
+Copyright (c) 2026 ThFoolL. All rights reserved.
+
+You may download and use this unmodified binary package free of charge for personal use or internal company use. You may share the complete unmodified package with its notices intact.
+
+This permission covers the distributed MatterDesk application and the published plugin distribution files used to install and operate it. It does not grant a license to the application's development sources, a right to sell the package, or rights to the MatterDesk name and branding. No application development source code is included.
+
+The application is provided as is, without warranties. You are responsible for using your own accounts and permissions and for choosing a model service suitable for your data.
+
+Third-party components remain under their own licenses. See plugin/THIRD_PARTY_NOTICES.txt, runtime/LICENSE, and the notices packaged with the application.

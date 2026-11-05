@@ -37,7 +37,7 @@ function Start-MatterDeskComponentInstall {
 function Write-MatterDeskRpc($Value) { [Console]::Out.WriteLine(($Value | ConvertTo-Json -Depth 30 -Compress)) }
 $taskTools = @(
   @{ name='matterdesk_setup_status'; description='查看事序的安装或更新进度。'; inputSchema=@{type='object';properties=@{};additionalProperties=$false}; annotations=@{readOnlyHint=$true} },
-  @{ name='matterdesk_install_components'; description='按用户要求，在后台安装或更新事序，保留已保存的事项和设置。完成后打开首次引导；新开对话即可使用事序工具。'; inputSchema=@{type='object';properties=@{};additionalProperties=$false}; annotations=@{readOnlyHint=$false;destructiveHint=$false} }
+  @{ name='matterdesk_install_components'; description='按用户要求，在后台安装或更新事序，保留已保存的事项和设置。完成后打开首次引导。Codex和Claude Code新开会话加载完整工具；DeepSeek Harness在插件页关闭再开启事序一次。'; inputSchema=@{type='object';properties=@{};additionalProperties=$false}; annotations=@{readOnlyHint=$false;destructiveHint=$false} }
 )
 while ($null -ne ($taskLine = [Console]::In.ReadLine())) {
   $taskRpc = $null

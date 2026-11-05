@@ -20,7 +20,7 @@ function Get-MatterDeskArchiveHash([string]$LiteralPath) {
 try {
   $taskComponent = Get-Content -LiteralPath (Join-Path $PSScriptRoot '..\component.json') -Raw -Encoding UTF8 | ConvertFrom-Json
   if ($taskComponent.version -notmatch '^\d+\.\d+\.\d+(-[a-zA-Z0-9.-]+)?$') { throw 'Unsupported component version' }
-  $taskExpectedAsset = 'MatterDesk-' + $taskComponent.version + '-codex-win-x64.zip'
+  $taskExpectedAsset = 'MatterDesk-' + $taskComponent.version + '-win-x64.zip'
   $taskBaseUrl = 'https://github.com/ThFoolL/matterdesk-releases/releases/download/v' + $taskComponent.version + '/'
   if ($taskComponent.asset -ne $taskExpectedAsset -or $taskComponent.url -ne ($taskBaseUrl + $taskExpectedAsset) -or $taskComponent.checksumsUrl -ne ($taskBaseUrl + 'SHA256SUMS.txt')) { throw 'Invalid release metadata' }
   [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -39,7 +39,7 @@ try {
   }
   if ($taskExpectedHash -notmatch '^[a-f0-9]{64}$') { throw 'Missing release checksum' }
   if (-not (Test-Path -LiteralPath $taskArchive) -or (Get-MatterDeskArchiveHash $taskArchive) -ne $taskExpectedHash) {
-    Set-MatterDeskInstallStage 'downloading' '正在后台下载事序，可继续使用 Codex。'
+    Set-MatterDeskInstallStage 'downloading' '正在后台下载事序，可继续使用 Agent。'
     $taskPartial = $taskArchive + '.partial'
     $taskClient.DownloadFile($taskComponent.url, $taskPartial)
     if ((Get-MatterDeskArchiveHash $taskPartial) -ne $taskExpectedHash) { throw 'Release checksum mismatch' }
@@ -53,7 +53,7 @@ try {
   Unblock-File -LiteralPath $taskInstaller
   Set-MatterDeskInstallStage 'installing' '正在安装事序并打开首次引导；已保存的事项和设置会保留。'
   & $taskInstaller -SkipPluginRegistration
-  Set-MatterDeskInstallStage 'ready' '事序已安装并打开。请按窗口引导填写关注范围、连接飞书；以后默认随 Codex 自动启动。新开 Codex 对话即可通过对话调整事序。' $false
+  Set-MatterDeskInstallStage 'ready' '事序已安装并打开。请按窗口引导填写关注范围、连接飞书；以后默认随已启用插件的 Agent 启动。新开对话即可通过对话调整事序。' $false
 } catch {
   $script:taskFailedAt = $script:taskCurrentStage
   $script:taskFailureType = $_.Exception.GetType().FullName

@@ -1,0 +1,39 @@
+{
+  "name": "matterdesk-dsh",
+  "version": "0.21.0-beta.1",
+  "type": "module",
+  "main": "./lib/index.mjs",
+  "description": "把飞书里的讨论，整理成桌面上清楚的待办",
+  "author": "ThFoolL",
+  "license": "SEE LICENSE IN LICENSE",
+  "homepage": "https://github.com/ThFoolL/matterdesk-releases",
+  "files": [
+    "lib",
+    "scripts",
+    "dist",
+    "skills",
+    "assets",
+    "component.json",
+    "cordis.patch.yml",
+    "THIRD_PARTY_NOTICES.txt",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=24.9.0",
+    "dsh": ">=0.2.2-rc.1 <0.3.0"
+  },
+  "dependencies": {
+    "@deepseek-ai/dsh-mcp-client": "0.2.2-rc.1"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/dsh-llm": "0.2.2-rc.1",
+    "@deepseek-ai/dsh-agent-default-model": "0.2.2-rc.1",
+    "@deepseek-ai/cordis": "~4.1.0"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
