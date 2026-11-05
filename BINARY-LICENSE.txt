@@ -1,0 +1,10 @@
+MatterDesk - Binary Distribution License
+Copyright (c) 2026 ThFoolL. All rights reserved.
+
+You may download and use this unmodified binary package free of charge for personal use or internal company use. You may share the complete unmodified package with its notices intact.
+
+This permission covers the distributed MatterDesk application only. It does not grant a source code license, a right to sell the package, or rights to the MatterDesk name and branding. No application source code is included.
+
+The application is provided as is, without warranties. You are responsible for using your own accounts and permissions and for choosing a model service suitable for your data.
+
+Third-party components remain under their own licenses. See plugin/THIRD_PARTY_NOTICES.txt, runtime/LICENSE, and the notices packaged with the application.

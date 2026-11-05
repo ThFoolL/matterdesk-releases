@@ -1,0 +1,11 @@
+*.exe
+*.zip
+*.db
+*.sqlite*
+*.log
+settings*.json
+runtime.json
+install.json
+private/
+src/
+node_modules/
