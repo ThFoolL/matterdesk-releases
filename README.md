@@ -4,7 +4,7 @@
 
 群消息太多、同时跟进好几个项目时，事序帮你把散落的讨论汇成一件件事，把真正需要处理的行动留在桌面上。
 
-[**下载 Codex Windows 测试版**](https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.20.0-beta.1/MatterDesk-0.20.0-beta.1-codex-win-x64.zip) · [版本说明](https://github.com/ThFoolL/matterdesk-releases/releases/tag/v0.20.0-beta.1) · [反馈问题](https://github.com/ThFoolL/matterdesk-releases/issues)
+[**下载 Codex Windows 测试版**](https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.20.0-beta.2/MatterDesk-0.20.0-beta.2-codex-win-x64.zip) · [版本说明](https://github.com/ThFoolL/matterdesk-releases/releases/tag/v0.20.0-beta.2) · [反馈问题](https://github.com/ThFoolL/matterdesk-releases/issues)
 
 ![事序的悬浮便签与分栏看板，内容均为虚构演示](docs/overview.png)
 
@@ -31,6 +31,8 @@
 ## 数据与使用范围
 
 消息、事项与个人设置保存在本机；整理时相关内容会发送到你在 Codex 中配置的模型接口。每位用户使用自己的飞书授权，事序只读取资料，不代你发消息或修改云文档。[查看数据说明](PRIVACY.md)
+
+初始分类规则包含通用的对话归并、事项粒度、本人责任与通知判断，不预设作者的业务。你的关注范围和后续分类习惯只保存在本机，升级时继续保留。
 
 当前发布的是 Codex Windows 测试版，可免费用于个人及公司内部工作，也可按原样分享完整安装包。其他宿主的适配后续提供。[查看使用许可](BINARY-LICENSE.txt)
 
