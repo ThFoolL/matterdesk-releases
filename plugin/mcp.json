@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "matterdesk": {
+      "type": "stdio",
+      "command": "powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "RemoteSigned",
+        "-File",
+        "${CODEX_PLUGIN_ROOT}/scripts/mcp.ps1"
+      ]
+    }
+  }
+}

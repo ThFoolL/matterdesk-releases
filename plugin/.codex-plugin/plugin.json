@@ -1,0 +1,17 @@
+{
+  "name": "matterdesk",
+  "version": "0.20.0-beta.3",
+  "description": "把飞书消息整理成按事项归集的待办便签",
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "extensions": {
+    "com.openai": {
+      "onboardingSkill": "./skills/setup/SKILL.md"
+    }
+  },
+  "interface": {
+    "displayName": "MatterDesk 事序",
+    "shortDescription": "把飞书消息整理成按事项归集的待办便签",
+    "category": "Productivity"
+  }
+}

@@ -1,0 +1,65 @@
+﻿$ErrorActionPreference = 'Stop'
+$env:PSModulePath = (Join-Path $PSHOME 'Modules') + ';' + $env:PSModulePath
+$taskDataDirectory = if ($env:MATTERDESK_DATA_DIR) { $env:MATTERDESK_DATA_DIR } else { Join-Path $env:LOCALAPPDATA 'MatterDesk' }
+$null = New-Item -ItemType Directory -Path $taskDataDirectory -Force
+$taskLock = $null
+try { $taskLock = [IO.File]::Open((Join-Path $taskDataDirectory 'component-install.lock'), 'OpenOrCreate', 'ReadWrite', 'None') } catch { exit 0 }
+$taskStatusFile = Join-Path $taskDataDirectory 'component-install.json'
+$taskComponent = $null
+$taskProcessStartedAt = [Diagnostics.Process]::GetCurrentProcess().StartTime.ToUniversalTime().ToString('o')
+function Set-MatterDeskInstallStage([string]$Stage, [string]$Message, [bool]$Running = $true) {
+  $script:taskCurrentStage = $Stage
+  $taskState = @{version=$taskComponent.version;stage=$Stage;message=$Message;running=$Running;pid=$PID;processStartedAt=$taskProcessStartedAt;updatedAt=[DateTime]::UtcNow.ToString('o');failureStage=$script:taskFailedAt;errorType=$script:taskFailureType}
+  [IO.File]::WriteAllText($taskStatusFile, ($taskState | ConvertTo-Json -Compress), [Text.UTF8Encoding]::new($false))
+}
+function Get-MatterDeskArchiveHash([string]$LiteralPath) {
+  $taskHasher = [Security.Cryptography.SHA256]::Create()
+  $taskStream = [IO.File]::OpenRead($LiteralPath)
+  try { ([BitConverter]::ToString($taskHasher.ComputeHash($taskStream))).Replace('-', '').ToLowerInvariant() } finally { $taskStream.Dispose(); $taskHasher.Dispose() }
+}
+try {
+  $taskComponent = Get-Content -LiteralPath (Join-Path $PSScriptRoot '..\component.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+  if ($taskComponent.version -notmatch '^\d+\.\d+\.\d+(-[a-zA-Z0-9.-]+)?$') { throw 'Unsupported component version' }
+  $taskExpectedAsset = 'MatterDesk-' + $taskComponent.version + '-codex-win-x64.zip'
+  $taskBaseUrl = 'https://github.com/ThFoolL/matterdesk-releases/releases/download/v' + $taskComponent.version + '/'
+  if ($taskComponent.asset -ne $taskExpectedAsset -or $taskComponent.url -ne ($taskBaseUrl + $taskExpectedAsset) -or $taskComponent.checksumsUrl -ne ($taskBaseUrl + 'SHA256SUMS.txt')) { throw 'Invalid release metadata' }
+  [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+  $taskClient = New-Object Net.WebClient
+  $taskClient.Headers.Add('User-Agent', 'MatterDesk-Setup')
+  $taskCache = [IO.Path]::GetFullPath((Join-Path $env:LOCALAPPDATA ('MatterDeskApp\downloads\' + $taskComponent.version)))
+  $null = New-Item -ItemType Directory -Path $taskCache -Force
+  $taskArchive = Join-Path $taskCache $taskExpectedAsset
+  Set-MatterDeskInstallStage 'checking' '正在检查桌面组件与下载校验信息。'
+  $taskExpectedHash = $taskComponent.sha256
+  if (-not $taskExpectedHash) {
+    $taskChecksums = $taskClient.DownloadString($taskComponent.checksumsUrl)
+    foreach ($taskLine in ($taskChecksums -split "`n")) {
+      if ($taskLine.Trim() -match ('^([a-f0-9]{64})  ' + [regex]::Escape($taskExpectedAsset) + '$')) { $taskExpectedHash = $Matches[1]; break }
+    }
+  }
+  if ($taskExpectedHash -notmatch '^[a-f0-9]{64}$') { throw 'Missing release checksum' }
+  if (-not (Test-Path -LiteralPath $taskArchive) -or (Get-MatterDeskArchiveHash $taskArchive) -ne $taskExpectedHash) {
+    Set-MatterDeskInstallStage 'downloading' '正在后台下载桌面窗口和运行环境，可继续使用 Codex。'
+    $taskPartial = $taskArchive + '.partial'
+    $taskClient.DownloadFile($taskComponent.url, $taskPartial)
+    if ((Get-MatterDeskArchiveHash $taskPartial) -ne $taskExpectedHash) { throw 'Release checksum mismatch' }
+    Move-Item -LiteralPath $taskPartial -Destination $taskArchive -Force
+  }
+  Set-MatterDeskInstallStage 'verifying' '下载校验通过，正在解压安装组件。'
+  Add-Type -AssemblyName System.IO.Compression.FileSystem
+  $taskExtract = Join-Path $taskCache ('package-' + [Guid]::NewGuid().ToString('N'))
+  [IO.Compression.ZipFile]::ExtractToDirectory($taskArchive, $taskExtract)
+  $taskInstaller = Join-Path $taskExtract 'install.ps1'
+  Unblock-File -LiteralPath $taskInstaller
+  Set-MatterDeskInstallStage 'installing' '正在安装组件并打开首次引导，个人设置与资料保留。'
+  & $taskInstaller -SkipPluginRegistration
+  Set-MatterDeskInstallStage 'ready' '安装完成。请在事序窗口填写关注范围并连接飞书；新开 Codex 对话后可使用完整插件。' $false
+} catch {
+  $script:taskFailedAt = $script:taskCurrentStage
+  $script:taskFailureType = $_.Exception.GetType().FullName
+  Set-MatterDeskInstallStage 'failed' '组件下载或安装失败，可重新安装；个人设置与资料保留。请确认能访问 GitHub Releases。' $false
+  exit 1
+} finally {
+  if ($taskClient) { $taskClient.Dispose() }
+  if ($taskLock) { $taskLock.Dispose() }
+}

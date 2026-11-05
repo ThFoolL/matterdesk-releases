@@ -4,7 +4,7 @@
 
 群消息太多、同时跟进好几个项目时，事序帮你把散落的讨论汇成一件件事，把真正需要处理的行动留在桌面上。
 
-[**下载 Codex Windows 测试版**](https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.20.0-beta.2/MatterDesk-0.20.0-beta.2-codex-win-x64.zip) · [版本说明](https://github.com/ThFoolL/matterdesk-releases/releases/tag/v0.20.0-beta.2) · [反馈问题](https://github.com/ThFoolL/matterdesk-releases/issues)
+[**安装 Codex 插件**](#开始使用) · [版本说明](https://github.com/ThFoolL/matterdesk-releases/releases/tag/v0.20.0-beta.3) · [反馈问题](https://github.com/ThFoolL/matterdesk-releases/issues)
 
 ![事序的悬浮便签与分栏看板，内容均为虚构演示](docs/overview.png)
 
@@ -20,9 +20,18 @@
 
 本版面向 **Windows 10/11 x64 + Codex 桌面应用**。Codex 需支持插件，并已配置可用的模型 API Key 与接口地址；事序直接继承这份配置。
 
-1. 下载 ZIP，**完整解压后双击 `install.cmd`**。安装程序会准备桌面窗口、运行环境和 Codex 插件，无需管理员权限或另装 Node.js。
-2. 在首次引导中，说明**主要关注的业务范围和职责**，再**绑定飞书应用并完成本人授权**。已有应用直接复用，没有应用可跟随连接助手创建；公司后台是否要求审批，以实际提示为准。
-3. 安装后新开一个 Codex 对话，说“打开事序”。在事序中点击巡检开始整理，按需开启定时更新。
+通过 GitHub 插件源安装，在终端执行：
+
+```powershell
+codex plugin marketplace add ThFoolL/matterdesk-releases --ref main
+codex plugin add matterdesk@matterdesk-codex
+```
+
+1. 新开一个 Codex 对话，说**“设置事序”**。Agent 会下载并校验本版桌面窗口和运行环境，无需管理员权限或另装 Node.js；安装在后台进行，可以继续聊天。
+2. 在打开的首次引导中，说明**主要关注的业务范围和职责**，再**绑定飞书应用并完成本人授权**。已有应用直接复用，没有应用可跟随连接助手创建；公司后台是否要求审批，以实际提示为准。
+3. 组件安装完成后新开一个 Codex 对话，即可使用完整插件工具。平时说“打开事序”，或在事序中点击巡检开始整理，按需开启定时更新。
+
+更新时执行 `codex plugin marketplace upgrade matterdesk-codex`，然后新开对话说“更新事序”，按引导更新桌面组件；个人设置与数据保留。也可[下载完整 ZIP](https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.20.0-beta.3/MatterDesk-0.20.0-beta.3-codex-win-x64.zip)，解压后运行 `install.cmd` 作为备用安装方式。
 
 ![首次引导：填写关注范围，再连接飞书；内容均为虚构演示](docs/setup.png)
 
@@ -36,4 +45,4 @@
 
 当前发布的是 Codex Windows 测试版，可免费用于个人及公司内部工作，也可按原样分享完整安装包。其他宿主的适配后续提供。[查看使用许可](BINARY-LICENSE.txt)
 
-此公开仓库用于发布下载包、说明和演示图片，应用源码独立维护。图片中的业务、消息与人员均为虚构示例。
+此公开仓库提供标准插件目录、marketplace、编译后的桥接文件、说明和演示图片；桌面程序放在 Release，应用源码独立维护。图片中的业务、消息与人员均为虚构示例。
