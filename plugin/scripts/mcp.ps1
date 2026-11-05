@@ -12,7 +12,7 @@ if (Test-Path -LiteralPath $taskRegistration) {
     if ((Test-Path -LiteralPath $taskCandidate) -and (Split-Path -Leaf (Split-Path -Parent $taskInstallation.executable)) -eq $taskComponent.version) { $taskNode = $taskCandidate }
   }
 }
-if (-not $taskNode -and $taskInstallation.pluginId -eq 'matterdesk@matterdesk-local') {
+if (-not $taskNode -and -not $taskComponent.sha256 -and $taskInstallation.pluginId -eq 'matterdesk@matterdesk-local') {
   $taskCommand = Get-Command node.exe -ErrorAction SilentlyContinue
   if ($taskCommand) { $taskNode = $taskCommand.Source }
 }
