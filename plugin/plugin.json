@@ -2,24 +2,30 @@
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "matterdesk",
   "version": "0.20.0-beta.3",
-  "description": "事序：按完整事项归集飞书消息、云文档和手动记录，通过独立桌面悬浮窗口跟进。",
+  "description": "把飞书里的讨论，整理成桌面上清楚的待办",
   "homepage": "https://github.com/ThFoolL/matterdesk-releases",
   "repository": "https://github.com/ThFoolL/matterdesk-releases",
-  "keywords": ["productivity", "feishu", "desktop"],
+  "keywords": [
+    "productivity",
+    "feishu",
+    "desktop"
+  ],
   "extensions": {
     "com.openai": {
       "onboardingSkill": "./skills/setup/SKILL.md",
       "interface": {
         "displayName": "MatterDesk 事序",
-        "shortDescription": "把飞书消息整理成按事项归集的待办便签",
-        "longDescription": "自动汇总同一事项的对话、文档和跟进动作，区分待办与通知。用自然语言调整分类习惯，在独立桌面悬浮窗口里持续跟进。当前为 Windows Codex 插件测试版。",
+        "shortDescription": "把飞书里的讨论，整理成桌面上清楚的待办",
+        "longDescription": "同一件事的消息和文档放在一起，具体待办归到事项下面。按你关注的工作区分待办与通知，用对话调整分类习惯，在桌面便签或分栏看板里随时跟进。首次设置后默认随 Codex 自动启动。",
         "developerName": "ThFoolL",
         "websiteURL": "https://github.com/ThFoolL/matterdesk-releases",
         "privacyPolicyURL": "https://github.com/ThFoolL/matterdesk-releases/blob/main/PRIVACY.md",
         "termsOfServiceURL": "https://github.com/ThFoolL/matterdesk-releases/blob/main/BINARY-LICENSE.txt",
         "composerIcon": "./assets/icon.png",
         "logo": "./assets/icon.png",
-        "screenshots": ["./assets/preview.png"],
+        "screenshots": [
+          "./assets/preview.png"
+        ],
         "category": "Productivity"
       }
     }

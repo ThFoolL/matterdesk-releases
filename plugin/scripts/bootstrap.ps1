@@ -13,7 +13,7 @@ function Get-MatterDeskSetupStatus {
     if (-not $taskProcess -or $taskProcess.ProcessName -ne 'powershell' -or $taskProcess.StartTime.ToUniversalTime().ToString('o') -ne $taskStatus.processStartedAt) {
       $taskStatus.running = $false
       $taskStatus.stage = 'interrupted'
-      $taskStatus.message = '组件安装已中断，可以重新安装；个人数据保留。'
+      $taskStatus.message = '安装已中断，可以让 Agent 重新安装；已保存的事项和设置会保留。'
     }
   }
   if ($taskStatus -and $taskStatus.version -eq $taskComponent.version) {
@@ -22,7 +22,7 @@ function Get-MatterDeskSetupStatus {
     try { $taskRegistered = Get-Content -LiteralPath (Join-Path $taskDataDirectory 'install.json') -Raw -Encoding UTF8 | ConvertFrom-Json } catch { }
     if ($taskStatus.stage -ne 'ready' -or ($taskRegistered.executable -eq (Join-Path $taskInstalledRoot 'MatterDesk.exe') -and (Test-Path -LiteralPath (Join-Path $taskInstalledRoot 'MatterDesk.exe')) -and (Test-Path -LiteralPath (Join-Path $taskInstalledRoot 'runtime\node.exe')))) { return $taskStatus }
   }
-  return @{ version=$taskComponent.version; running=$false; stage='not_installed'; message='请安装本版桌面组件。安装完成后新开 Codex 对话，填写关注范围并连接飞书。' }
+  return @{ version=$taskComponent.version; running=$false; stage='not_installed'; message='尚未安装本版事序。可以让 Agent 帮你安装，完成后按窗口引导填写关注范围并连接飞书。' }
 }
 function Start-MatterDeskComponentInstall {
   $taskStatus = Get-MatterDeskSetupStatus
@@ -30,14 +30,14 @@ function Start-MatterDeskComponentInstall {
   $null = New-Item -ItemType Directory -Path $taskDataDirectory -Force
   $taskSetup = Join-Path $PSScriptRoot 'setup.ps1'
   $taskProcess = Start-Process -FilePath (Join-Path $PSHOME 'powershell.exe') -WindowStyle Hidden -ArgumentList @('-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'RemoteSigned', '-File', ('"' + $taskSetup + '"')) -PassThru
-  $taskStartedState = @{ version=$taskComponent.version; running=$true; stage='starting'; pid=$taskProcess.Id; processStartedAt=$taskProcess.StartTime.ToUniversalTime().ToString('o'); message='已在后台启动组件安装。用 matterdesk_setup_status 查看进度；请等待完成后新开对话。' }
+  $taskStartedState = @{ version=$taskComponent.version; running=$true; stage='starting'; pid=$taskProcess.Id; processStartedAt=$taskProcess.StartTime.ToUniversalTime().ToString('o'); message='正在后台安装事序，可继续聊天。安装完成后会打开首次引导。' }
   if (-not (Get-MatterDeskSetupStatus).running) { [IO.File]::WriteAllText($taskStatusFile, ($taskStartedState | ConvertTo-Json -Compress), [Text.UTF8Encoding]::new($false)) }
   return $taskStartedState
 }
 function Write-MatterDeskRpc($Value) { [Console]::Out.WriteLine(($Value | ConvertTo-Json -Depth 30 -Compress)) }
 $taskTools = @(
-  @{ name='matterdesk_setup_status'; description='查看事序桌面组件的安装或升级进度，无需 Node.js。'; inputSchema=@{type='object';properties=@{};additionalProperties=$false}; annotations=@{readOnlyHint=$true} },
-  @{ name='matterdesk_install_components'; description='用户要求设置或更新事序时，在后台下载并校验官方 Release 桌面组件，保留个人数据。完成后新开对话使用完整工具。'; inputSchema=@{type='object';properties=@{};additionalProperties=$false}; annotations=@{readOnlyHint=$false;destructiveHint=$false} }
+  @{ name='matterdesk_setup_status'; description='查看事序的安装或更新进度。'; inputSchema=@{type='object';properties=@{};additionalProperties=$false}; annotations=@{readOnlyHint=$true} },
+  @{ name='matterdesk_install_components'; description='按用户要求，在后台安装或更新事序，保留已保存的事项和设置。完成后打开首次引导；新开对话即可使用事序工具。'; inputSchema=@{type='object';properties=@{};additionalProperties=$false}; annotations=@{readOnlyHint=$false;destructiveHint=$false} }
 )
 while ($null -ne ($taskLine = [Console]::In.ReadLine())) {
   $taskRpc = $null

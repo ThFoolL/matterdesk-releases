@@ -29,7 +29,7 @@ try {
   $taskCache = [IO.Path]::GetFullPath((Join-Path $env:LOCALAPPDATA ('MatterDeskApp\downloads\' + $taskComponent.version)))
   $null = New-Item -ItemType Directory -Path $taskCache -Force
   $taskArchive = Join-Path $taskCache $taskExpectedAsset
-  Set-MatterDeskInstallStage 'checking' '正在检查桌面组件与下载校验信息。'
+  Set-MatterDeskInstallStage 'checking' '正在检查事序安装文件。'
   $taskExpectedHash = $taskComponent.sha256
   if (-not $taskExpectedHash) {
     $taskChecksums = $taskClient.DownloadString($taskComponent.checksumsUrl)
@@ -39,25 +39,25 @@ try {
   }
   if ($taskExpectedHash -notmatch '^[a-f0-9]{64}$') { throw 'Missing release checksum' }
   if (-not (Test-Path -LiteralPath $taskArchive) -or (Get-MatterDeskArchiveHash $taskArchive) -ne $taskExpectedHash) {
-    Set-MatterDeskInstallStage 'downloading' '正在后台下载桌面窗口和运行环境，可继续使用 Codex。'
+    Set-MatterDeskInstallStage 'downloading' '正在后台下载事序，可继续使用 Codex。'
     $taskPartial = $taskArchive + '.partial'
     $taskClient.DownloadFile($taskComponent.url, $taskPartial)
     if ((Get-MatterDeskArchiveHash $taskPartial) -ne $taskExpectedHash) { throw 'Release checksum mismatch' }
     Move-Item -LiteralPath $taskPartial -Destination $taskArchive -Force
   }
-  Set-MatterDeskInstallStage 'verifying' '下载校验通过，正在解压安装组件。'
+  Set-MatterDeskInstallStage 'verifying' '下载检查通过，正在准备安装。'
   Add-Type -AssemblyName System.IO.Compression.FileSystem
   $taskExtract = Join-Path $taskCache ('package-' + [Guid]::NewGuid().ToString('N'))
   [IO.Compression.ZipFile]::ExtractToDirectory($taskArchive, $taskExtract)
   $taskInstaller = Join-Path $taskExtract 'install.ps1'
   Unblock-File -LiteralPath $taskInstaller
-  Set-MatterDeskInstallStage 'installing' '正在安装组件并打开首次引导，个人设置与资料保留。'
+  Set-MatterDeskInstallStage 'installing' '正在安装事序并打开首次引导；已保存的事项和设置会保留。'
   & $taskInstaller -SkipPluginRegistration
-  Set-MatterDeskInstallStage 'ready' '安装完成。请在事序窗口填写关注范围并连接飞书；新开 Codex 对话后可使用完整插件。' $false
+  Set-MatterDeskInstallStage 'ready' '事序已安装并打开。请按窗口引导填写关注范围、连接飞书；以后默认随 Codex 自动启动。新开 Codex 对话即可通过对话调整事序。' $false
 } catch {
   $script:taskFailedAt = $script:taskCurrentStage
   $script:taskFailureType = $_.Exception.GetType().FullName
-  Set-MatterDeskInstallStage 'failed' '组件下载或安装失败，可重新安装；个人设置与资料保留。请确认能访问 GitHub Releases。' $false
+  Set-MatterDeskInstallStage 'failed' '下载或安装未完成。请检查是否能打开 GitHub 的下载页面，再让 Agent 重试；已保存的事项和设置会保留。' $false
   exit 1
 } finally {
   if ($taskClient) { $taskClient.Dispose() }
