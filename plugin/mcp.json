@@ -1,4 +1,5 @@
 {
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
   "mcpServers": {
     "matterdesk": {
       "type": "stdio",
@@ -10,8 +11,9 @@
         "-ExecutionPolicy",
         "RemoteSigned",
         "-File",
-        "${CODEX_PLUGIN_ROOT}/scripts/mcp.ps1"
-      ]
+        "${PLUGIN_ROOT}/scripts/mcp.ps1"
+      ],
+      "cwd": "${PLUGIN_ROOT}"
     }
   }
 }

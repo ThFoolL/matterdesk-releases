@@ -1,6 +1,6 @@
 {
   "name": "matterdesk",
-  "version": "0.21.0-beta.2",
+  "version": "0.21.0-beta.3",
   "description": "把飞书里的讨论，整理成桌面上清楚的待办",
   "skills": "./skills/",
   "mcpServers": "./.mcp.json",
@@ -12,6 +12,7 @@
   "interface": {
     "displayName": "MatterDesk 事序",
     "shortDescription": "把飞书里的讨论，整理成桌面上清楚的待办",
+    "longDescription": "同一件事的消息和文档放在一起，具体待办归到事项下面。按你关注的工作区分待办与通知，用对话调整分类习惯，在桌面便签或分栏看板里随时跟进。首次设置后默认随 Codex 自动启动，也可从 Codex 内的「事序悬浮窗」入口再次打开。",
     "category": "Productivity"
   }
 }

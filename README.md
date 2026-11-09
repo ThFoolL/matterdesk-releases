@@ -4,7 +4,7 @@
 
 群消息太多、同时跟进好几件事时，事序把散落的讨论放在同一事项下，帮你看清自己要做什么、还在等谁的反馈。
 
-[开始使用](#开始使用) · [下载测试版](https://github.com/ThFoolL/matterdesk-releases/releases/tag/v0.21.0-beta.2) · [反馈问题](https://github.com/ThFoolL/matterdesk-releases/issues)
+[开始使用](#开始使用) · [下载测试版](https://github.com/ThFoolL/matterdesk-releases/releases/tag/v0.21.0-beta.3) · [反馈问题](https://github.com/ThFoolL/matterdesk-releases/issues)
 
 ![事序的桌面便签与分栏看板](docs/overview.png)
 
@@ -26,7 +26,7 @@
 | Claude Code | 支持插件，已配置用户级模型 API 接口或环境变量 |
 | DeepSeek Harness（DSH） | 0.2.2-rc.1，Node.js 24.9 或更新版本，已连接模型 |
 
-**同一台电脑共用同一份事项、待办、规则和飞书连接。** 已装 Codex 版时，安装另外一个入口即可继续使用，不需要重复绑定飞书。安装新入口会保留已有模型选择；需要切换时，在设置中选择“模型配置来源”。
+**同一台电脑、同一个 Windows 用户共用同一份事项、待办、规则和飞书连接。** 已装 Codex 版时，安装另外一个入口即可继续使用，不需要重复绑定飞书。安装新入口会保留已有模型选择，也不会将共用程序降级；需要切换时，在设置中选择“模型配置来源”。
 
 已有旧版时，先让原 Agent 更新事序，再添加其他入口。
 
@@ -54,14 +54,14 @@ Agent 会按照这里的说明准备对应插件和桌面程序，安装在后�
 
 连接完成后，点击“巡检”整理信息，或在设置中开启定时更新。
 
-**首次安装完成后，事序默认随已启用插件的 Agent 启动，以后不用每次输入启动口令。** Codex 随桌面应用启动，Claude Code 在会话开始时启动，DSH 在插件加载时启动。可以在设置中关闭这个选项，也可以通过桌面快捷方式或托盘打开窗口。
+**首次安装完成后，事序默认随已启用插件的 Agent 启动，以后不用每次输入启动口令。** Codex 随桌面应用启动，Claude Code 在会话开始时启动，DSH 在插件加载时启动。可以在设置中关闭这个选项，也可以从 Agent 内再次打开。窗口隐藏后，点击托盘图标即可显示。
 
 首次配置可以稍后继续；也可以先跳过飞书连接，手动记录事项和待办。
 
 <details>
 <summary>其他安装方式</summary>
 
-可以[下载完整安装包](https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.21.0-beta.2/MatterDesk-0.21.0-beta.2-win-x64.zip)，解压后双击 `install.cmd`，选择使用的 Agent，再按窗口中的引导完成设置。无需管理员权限。选择 DSH 时，这一步只安装桌面程序；插件按下方方式添加。
+可以[下载完整安装包](https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.21.0-beta.3/MatterDesk-0.21.0-beta.3-win-x64.zip)，解压后双击 `install.cmd`，选择使用的 Agent，再按窗口中的引导完成设置。无需管理员权限。选择 DSH 时，这一步只安装桌面程序；插件按下方方式添加。
 
 如果需要手动安装 Codex 插件，在 PowerShell 中依次执行：
 
@@ -93,5 +93,7 @@ dsh plugin --profile <当前使用的profile> add "git+https://github.com/ThFool
 - **飞书范围**：读取范围由你的应用权限、本人授权和所选聊天、文档共同决定。事序只读取资料，不代你发送消息或修改云文档。
 - **个人数据**：消息、待办和个人设置保存在本机；整理时，相关内容会发送到你使用的模型服务。配置导出不包含登录信息。详见[数据说明](PRIVACY.md)。
 - **分享与更新**：可以把这个页面发给同事，每个人独立设置和授权。需要更新时，告诉 Agent“帮我检查并更新事序”；已保存的事项和个人设置会保留。同机共享支持三个入口同时使用，暂不支持跨设备同步。
+
+较早的版本如果提示先退出，请从托盘退出事序，再让 Agent 继续更新。后续更新可由 Agent 安全退出并重新打开。
 
 当前为测试版，可免费用于个人和公司内部工作。图片中的内容均为演示示例。[查看使用许可](BINARY-LICENSE.txt)

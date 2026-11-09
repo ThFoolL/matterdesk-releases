@@ -7,7 +7,11 @@ foreach ($target in @($installation.executable, $installation.entry, $installati
   if ($target -and ($target -match '["\r\n]' -or -not (Test-Path -LiteralPath $target))) { throw '暂时找不到事序的安装文件，请让 Agent 检查并修复安装。' }
 }
 if ($installation.entry) {
-  Start-Process -FilePath $installation.executable -ArgumentList ('"' + $installation.entry + '"') -WorkingDirectory $installation.workingDirectory -WindowStyle Hidden
+  $taskLaunched = Start-Process -FilePath $installation.executable -ArgumentList ('"' + $installation.entry + '"') -WorkingDirectory $installation.workingDirectory -WindowStyle Hidden -PassThru
 } else {
-  Start-Process -FilePath $installation.executable -WorkingDirectory $installation.workingDirectory -WindowStyle Hidden
+  $taskLaunched = Start-Process -FilePath $installation.executable -WorkingDirectory $installation.workingDirectory -WindowStyle Hidden -PassThru
 }
+try {
+  $taskRecord = @{ at = [DateTime]::UtcNow.ToString('o'); event = 'launch-requested'; pid = $taskLaunched.Id } | ConvertTo-Json -Compress
+  [IO.File]::AppendAllText((Join-Path $profileRoot 'desktop.log'), $taskRecord + [Environment]::NewLine, [Text.UTF8Encoding]::new($false))
+} catch { }

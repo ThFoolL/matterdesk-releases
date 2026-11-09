@@ -9,8 +9,9 @@
         "-ExecutionPolicy",
         "RemoteSigned",
         "-File",
-        "${CODEX_PLUGIN_ROOT}/scripts/mcp.ps1"
-      ]
+        "./scripts/mcp.ps1"
+      ],
+      "cwd": "."
     }
   }
 }

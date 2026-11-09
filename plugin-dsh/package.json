@@ -1,6 +1,6 @@
 {
   "name": "matterdesk-dsh",
-  "version": "0.21.0-beta.2",
+  "version": "0.21.0-beta.3",
   "type": "module",
   "main": "./lib/index.mjs",
   "description": "把飞书里的讨论，整理成桌面上清楚的待办",

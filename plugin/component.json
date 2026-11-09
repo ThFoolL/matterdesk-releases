@@ -1,7 +1,7 @@
 {
-  "version": "0.21.0-beta.2",
-  "asset": "MatterDesk-0.21.0-beta.2-win-x64.zip",
-  "url": "https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.21.0-beta.2/MatterDesk-0.21.0-beta.2-win-x64.zip",
-  "checksumsUrl": "https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.21.0-beta.2/SHA256SUMS.txt",
-  "sha256": "dc32bd7e9a9c81440951ed60f373dd0a1254dd8edddcaef84e93cc5365a1d96b"
+  "version": "0.21.0-beta.3",
+  "asset": "MatterDesk-0.21.0-beta.3-win-x64.zip",
+  "url": "https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.21.0-beta.3/MatterDesk-0.21.0-beta.3-win-x64.zip",
+  "checksumsUrl": "https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.21.0-beta.3/SHA256SUMS.txt",
+  "sha256": "b3923880f36f55b9fdca7a7f0d4ad11a187936ef9dd403b0ffe902f284201a0b"
 }
