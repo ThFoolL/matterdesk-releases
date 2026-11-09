@@ -4,7 +4,7 @@
 
 群消息太多、同时跟进好几件事时，事序把散落的讨论放在同一事项下，帮你看清自己要做什么、还在等谁的反馈。
 
-[开始使用](#开始使用) · [下载测试版](https://github.com/ThFoolL/matterdesk-releases/releases/tag/v0.21.0-beta.3) · [反馈问题](https://github.com/ThFoolL/matterdesk-releases/issues)
+[开始使用](#开始使用) · [下载测试版](https://github.com/ThFoolL/matterdesk-releases/releases/tag/v0.21.0-beta.4) · [反馈问题](https://github.com/ThFoolL/matterdesk-releases/issues)
 
 ![事序的桌面便签与分栏看板](docs/overview.png)
 
@@ -61,7 +61,7 @@ Agent 会按照这里的说明准备对应插件和桌面程序，安装在后�
 <details>
 <summary>其他安装方式</summary>
 
-可以[下载完整安装包](https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.21.0-beta.3/MatterDesk-0.21.0-beta.3-win-x64.zip)，解压后双击 `install.cmd`，选择使用的 Agent，再按窗口中的引导完成设置。无需管理员权限。选择 DSH 时，这一步只安装桌面程序；插件按下方方式添加。
+可以[下载完整安装包](https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.21.0-beta.4/MatterDesk-0.21.0-beta.4-win-x64.zip)，解压后双击 `install.cmd`，选择使用的 Agent，再按窗口中的引导完成设置。无需管理员权限。选择 DSH 时，这一步只安装桌面程序；插件按下方方式添加。
 
 如果需要手动安装 Codex 插件，在 PowerShell 中依次执行：
 
@@ -96,4 +96,6 @@ dsh plugin --profile <当前使用的profile> add "git+https://github.com/ThFool
 
 较早的版本如果提示先退出，请从托盘退出事序，再让 Agent 继续更新。后续更新可由 Agent 安全退出并重新打开。
 
-当前为测试版，可免费用于个人和公司内部工作。图片中的内容均为演示示例。[查看使用许可](BINARY-LICENSE.txt)
+事序采用 [MIT 许可](LICENSE)，可以使用、修改和分发，包括商业使用；请保留版权及许可声明。第三方组件遵循各自的许可。欢迎通过 [Issues](https://github.com/ThFoolL/matterdesk-releases/issues) 反馈问题和参与讨论。
+
+当前为测试版，图片中的内容均为演示示例。这个仓库提供插件与安装包，应用源码仓库暂未公开。
