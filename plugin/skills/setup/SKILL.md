@@ -24,7 +24,7 @@ Codex 本机安装完成后，可调用 `matterdesk_launcher` 显示原生「事
 1. 当前版支持 Windows 10/11（64 位）和 Codex 桌面应用。公开安装地址是 https://github.com/ThFoolL/matterdesk-releases ，插件名 `matterdesk@matterdesk-codex`。Agent 通过公开仓库安装插件，并从对应下载版本准备桌面程序。不修改用户的 Codex 模型配置，也不在插件缓存运行 npm 安装。
 2. 首次安装或插件升级后，组件不匹配时提供两个轻量工具，无需预装 Node.js。先用 `matterdesk_setup_status` 检查；用户要求设置、打开或更新事序时调用 `matterdesk_install_components`，后台安装返回后可继续聊天。用 status 按进度查看，running=true 时不重复安装。失败可重新调用安装工具。安装入口固定读取插件自带 component.json 的版本和校验值，不能改成不明下载地址、跳过哈希验证或切换别人的应用目录。安装完成打开首次引导，Codex／Claude Code 新开会话加载完整工具，DSH 关闭再开启事序插件一次；完整工具已可用时直接用 `matterdesk_window`。此过程保留 GitHub marketplace 来源、用户数据与个人配置，不重新注册成本地插件源。不要把任何密钥作为命令行参数。
    如果宿主暂未暴露轻量工具，可由 Agent 执行插件目录的 `scripts/setup.ps1`（PowerShell RemoteSigned），它执行同一份受校验安装流程；用户不需要自己查路径、装 Node.js 或运行 npm。无法执行本机脚本时再给 https://github.com/ThFoolL/matterdesk-releases/releases 的完整 ZIP 备用入口。确认 installed/ready 的实际状态后再说明安装完成；排队和下载中不等于完成。
-3. 模型接口直接继承宿主 Agent 的本机 API 配置，设置页分别选择主力和高速模型并测试连接。主力默认跟随 Agent，思考强度可选低/中/高、默认中；高速从真实列表自动优先选择 DeepSeek v4.1 Flash，缺少时跟随主力，思考保持低。两者复用同一份已有接口与认证。首次安装默认继承当前宿主；安装其他宿主插件不覆盖本机已保存的模型来源。设置中可明确选择 Codex、Claude Code 或 DeepSeek Harness，切换来源时清空旧模型选择、从新来源真实列表选择。选择 DSH 时需要宿主正在运行，模型通过 ctx.llm 调用，不提取或复制其密钥。Claude Code 读取用户级 API 配置或已有环境变量，不执行凭据 helper、不读取项目级配置、不把订阅登录视为 API Key。只报告脱敏状态，不能输出凭据。列表不可用时保留 Agent 当前模型，不让用户手填接口或密钥。
+3. 模型接口直接继承宿主 Agent 的本机 API 配置，设置页分别选择主力和高速模型并测试连接。主力默认跟随 Agent，思考强度可选低/中/高、默认中；高速从真实列表自动优先选择 DeepSeek v4.1 Flash，缺少时跟随主力，思考保持低。两者复用同一份已有接口与认证。每个宿主首次使用默认继承自己的模型配置；安装其他宿主插件不覆盖已保存的选择。设置中可明确选择 Codex、Claude Code 或 DeepSeek Harness，切换来源时清空旧模型选择、从新来源真实列表选择。选择 DSH 时需要宿主正在运行，模型通过 ctx.llm 调用，不提取或复制其密钥。Claude Code 读取用户级 API 配置或已有环境变量，不执行凭据 helper、不读取项目级配置、不把订阅登录视为 API Key。只报告脱敏状态，不能输出凭据。列表不可用时保留 Agent 当前模型，不让用户手填接口或密钥。
 4. 接入飞书时按下方连接助手流程操作，自动检查已有配置，只询问缺少的信息。缺少 lark-cli 时先通过 install_cli 使用飞书官方完整安装向导，安装连接工具及配套 Agent 技能，再继续应用选择和本人授权；无需用户提前手动安装 Node 或 lark-cli，不另做独立安装器。群聊与私聊默认开启，按时间读取本人可见会话，无需用户逐个选择群。首次巡检前可调整历史天数，默认3天；文档按需添加。
 5. 机器人消息事件仅覆盖机器人可见且用户选择的群，不等于个人全部消息；轮询始终可用。不要向任何群发测试消息。
 6. 默认自动归类并纳入明确事项；不确定的信息附原因留在待确认。待确认页的“自动归类”可再次整理积压，也可用 matterdesk_classify_inbox。用户可关闭自动纳入，改为手动确认建议。无数据、认证失败、未收到事件不能声称同步完成。
@@ -40,11 +40,11 @@ Codex 本机安装完成后，可调用 `matterdesk_launcher` 显示原生「事
 
 首次连接先询问用户是否已有适合事序的应用。已有应用的选择流程是：先登录 https://open.feishu.cn/app 的开发者后台，查看本人有权管理的应用并核对名称与用途，再绑定所选应用，最后完成本人 OAuth 授权读取资料。开发者后台登录与应用之上的本人授权是两步，不能要求先在没有应用的情况下 OAuth 登录来列应用，也不能把用户可用应用列表当成开发者的应用列表。没有合适应用则优先推荐为自己新建。
 
-不能因为 lark-cli 已配置其他工具的应用就自动借用。connect/check 返回 choose-app 时，detectedAppId/detectedAppName 仅表示已保存的连接候选；展示实际应用名称，缺少名称时由 Agent 在开发者后台核对，不让用户手填名称，不为读取名称额外申请权限。用户明确选择后执行 select_app（appId 使用 detectedAppId，名称已核实时传真实 appName；暂时未知时使用 App ID 识别并继续）。已绑定应用的缺失名称可由 Agent 通过 confirm_app_name 保存，不重置授权。已经为事序明确绑定的应用、本人授权及升级前的事序连接继续使用，不能要求重建。已有其他合适应用由 Agent 核对后通过 connections_open 的本机安全表单绑定，不在对话中输入密钥。
+不能因为 lark-cli 已配置其他工具的应用就自动借用。connect/check 返回 choose-app 时，detectedAppId/detectedAppName 仅表示已保存的连接候选；同时展示实际应用名称和 App ID，缺少名称时由 Agent 在开发者后台核对，不让用户手填名称，不为读取名称额外申请权限。核对后可用 confirm_app_name 补充当前候选名称，该操作不绑定应用；用户明确选择后执行 select_app（appId 使用 detectedAppId，名称已核实时传真实 appName；暂时未知时使用 App ID 识别并继续）。已绑定应用的缺失名称同样通过 confirm_app_name 保存，不重置授权。已经为事序明确绑定的应用、本人授权及升级前的事序连接继续使用，不能要求重建。已有其他合适应用由 Agent 核对后通过 connections_open 的本机安全表单绑定，不在对话中输入密钥。
 
 用户选择新建后执行 create_app；缺 CLI 时 install_cli。Agent 自动发起官方向导，处理配置接收、缺失权限核对、本人授权接续和读取验证，让用户只做必要的确认与本人扫码。新建使用独立命名 profile，保留其他工具的应用、授权和默认配置。创建中断后先 connect 检查已保存结果，避免重复创建。cancel 停止当前引导，不删除已创建的远端应用。
 
-connect 会自动发起缺少的本人授权；添加文档时会检查对应读取权限，授权后继续验证并保存关注链接。原样展示 handoff 的链接和二维码，交还用户，用户明确完成后 continue；不要展示链接后立即轮询授权。授权过期则重新发起。
+connect 会自动发起缺少的本人授权；桌面窗口生成官方授权链接后自动打开，同时保留 handoff 的原始链接和二维码。打开失败时引导点击备用链接或扫码；生成失败时根据脱敏的飞书返回原因核对配置，不把生成失败当成等待用户授权。添加文档时会检查对应读取权限，授权后继续验证并保存关注链接。原样展示 handoff 的链接和二维码，交还用户，用户明确完成后 continue；不要展示链接后立即轮询授权。授权过期则重新发起。
 
 appMissingScopes / permissionRequest 是当前功能的最小用户权限清单。基础消息需要 search:message、im:message.group_msg:get_as_user、im:message.p2p_msg:get_as_user、im:chat:read；不申请宽泛的消息读写权限。云文档仅在添加链接或用户明确选择时申请 docx:document:readonly；wiki:node:read 只在知识库链接需要时追加。im:message.reactions:read 仅在开启简单沟通自动完成后申请。offline_access 只用于 OAuth 续期，不导入应用 API 权限。不要使用 --domain all、全量 --recommend、写入/发送、通讯录或机器人事件权限；高级实时事件另行按用户选择配置，不是接入前提。
 
@@ -80,7 +80,7 @@ appMissingScopes / permissionRequest 是当前功能的最小用户权限清单�
 
 ## 同机共享与宿主安装
 
-三个入口连接同一份本机资料目录和正在运行的桌面服务，事项、待办、规则、飞书连接与处理队列共同使用。无需再次绑定飞书。不能另建数据目录、迁移到插件缓存、覆盖已有模型来源或为新宿主复制凭据。新版本组件安装在同一应用目录体系，保留数据；模型来源是共同设置，用户明确切换后才生效。当前不提供跨设备同步。
+三个入口连接同一份本机资料目录和正在运行的桌面服务，事项、待办、规则、飞书连接与处理队列共同使用。无需再次绑定飞书。不能另建数据目录、迁移到插件缓存、覆盖已有模型来源或为新宿主复制凭据。新版本组件安装在同一应用目录体系，保留数据。各 Agent 分别保存模型来源、主力/高速型号和思考强度，默认继承自己的模型配置；修改当前入口不覆盖其他 Agent。自动巡检采用最近打开悬浮窗的 Agent 配置，已入队意见沿用提交时的配置。当前不提供跨设备同步。
 
 Claude Code 安装：`claude plugin marketplace add ThFoolL/matterdesk-releases`，然后 `claude plugin install matterdesk@matterdesk-claude --scope user`。首次设置工具与 Codex 相同。SessionStart 钩子只按已保存的自动启动偏好复用或打开窗口，不下载、不改个人设置。同一宿主会话手动退出后不反复拉起。
 

@@ -4,7 +4,7 @@
 
 群消息太多、同时跟进好几件事时，事序把散落的讨论放在同一事项下，帮你看清自己要做什么、还在等谁的反馈。
 
-[开始使用](#开始使用) · [下载测试版](https://github.com/ThFoolL/matterdesk-releases/releases/tag/v0.21.0-beta.7) · [反馈问题](https://github.com/ThFoolL/matterdesk-releases/issues)
+[开始使用](#开始使用) · [下载测试版](https://github.com/ThFoolL/matterdesk-releases/releases/tag/v0.21.0-beta.8) · [反馈问题](https://github.com/ThFoolL/matterdesk-releases/issues)
 
 ![事序的桌面便签与分栏看板](docs/overview.png)
 
@@ -26,7 +26,7 @@
 | Claude Code | 支持插件，已配置用户级模型 API 接口或环境变量 |
 | DeepSeek Harness（DSH） | 0.2.2-rc.1，Node.js 24.9 或更新版本，已连接模型 |
 
-**同一台电脑、同一个 Windows 用户共用同一份事项、待办、规则和飞书连接。** 已装 Codex 版时，安装另外一个入口即可继续使用，不需要重复绑定飞书。安装新入口会保留已有模型选择，也不会将共用程序降级；需要切换时，在设置中选择“模型配置来源”。
+**同一台电脑、同一个 Windows 用户共用同一份事项、待办、规则和飞书连接。** 安装另外一个入口即可继续使用，不需要重复绑定飞书。**各 Agent 分别记住模型设置**，默认沿用自己的模型接口；在一个入口修改型号，不会影响其他 Agent。安装新入口会保留已有资料，也不会将共用程序降级。
 
 已有旧版时，先让原 Agent 更新事序，再添加其他入口。
 
@@ -65,7 +65,7 @@ Agent 会按照这里的说明准备对应插件和桌面程序，安装在后�
 <details>
 <summary>其他安装方式</summary>
 
-可以[下载完整安装包](https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.21.0-beta.7/MatterDesk-0.21.0-beta.7-win-x64.zip)，解压后双击 `install.cmd`，选择使用的 Agent，再按窗口中的引导完成设置。无需管理员权限。选择 DSH 时，这一步只安装桌面程序；插件按下方方式添加。
+可以[下载完整安装包](https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.21.0-beta.8/MatterDesk-0.21.0-beta.8-win-x64.zip)，解压后双击 `install.cmd`，选择使用的 Agent，再按窗口中的引导完成设置。无需管理员权限。选择 DSH 时，这一步只安装桌面程序；插件按下方方式添加。
 
 如果需要手动安装 Codex 插件，在 PowerShell 中依次执行：
 

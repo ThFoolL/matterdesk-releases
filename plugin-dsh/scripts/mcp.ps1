@@ -14,7 +14,7 @@ if (Test-Path -LiteralPath $taskRegistration) {
     if ((Test-Path -LiteralPath $taskCandidate) -and $taskInstalledVersion -match '^\d+\.\d+\.\d+(-[a-zA-Z0-9.-]+)?$' -and (Compare-MatterDeskVersion $taskInstalledVersion $taskComponent.version) -ge 0) { $taskNode = $taskCandidate }
   }
 }
-if (-not $taskNode -and -not $taskComponent.sha256 -and $taskInstallation.pluginId -eq 'matterdesk@matterdesk-local') {
+if (-not $taskNode -and -not $taskComponent.sha256 -and ($taskInstallation.pluginId -eq 'matterdesk@matterdesk-local' -or ($taskInstallation.componentId -eq 'matterdesk-desktop' -and $taskInstallation.entry))) {
   $taskCommand = Get-Command node.exe -ErrorAction SilentlyContinue
   if ($taskCommand) { $taskNode = $taskCommand.Source }
 }
