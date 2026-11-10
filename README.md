@@ -4,7 +4,7 @@
 
 群消息太多、同时跟进好几件事时，事序把散落的讨论放在同一事项下，帮你看清自己要做什么、还在等谁的反馈。
 
-[开始使用](#开始使用) · [下载测试版](https://github.com/ThFoolL/matterdesk-releases/releases/tag/v0.21.0-beta.6) · [反馈问题](https://github.com/ThFoolL/matterdesk-releases/issues)
+[开始使用](#开始使用) · [下载测试版](https://github.com/ThFoolL/matterdesk-releases/releases/tag/v0.21.0-beta.7) · [反馈问题](https://github.com/ThFoolL/matterdesk-releases/issues)
 
 ![事序的桌面便签与分栏看板](docs/overview.png)
 
@@ -42,6 +42,8 @@ https://github.com/ThFoolL/matterdesk-releases
 
 Agent 会按照这里的说明准备对应插件和桌面程序，安装在后台进行。首次安装后，Codex／Claude Code 新开会话加载事序工具；DSH 在插件页面关闭再开启事序一次。需要确认时，按宿主的提示继续即可。
 
+接入飞书需要官方连接工具 lark-cli。首次引导会检查，未安装时点击「安装并继续」，通过飞书官方安装向导准备工具及配套 Agent 技能；无需提前手动安装 Node 或 lark-cli。完成后继续选择飞书应用和本人授权，安装失败可以重试。
+
 ### 2. 告诉事序你关注什么
 
 在首次引导中，用日常语言说明主要关注的业务、职责，以及不需要跟进的内容。比如：“负责客户项目的需求和进度协调，关注风险与待确认的决定。”
@@ -63,7 +65,7 @@ Agent 会按照这里的说明准备对应插件和桌面程序，安装在后�
 <details>
 <summary>其他安装方式</summary>
 
-可以[下载完整安装包](https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.21.0-beta.6/MatterDesk-0.21.0-beta.6-win-x64.zip)，解压后双击 `install.cmd`，选择使用的 Agent，再按窗口中的引导完成设置。无需管理员权限。选择 DSH 时，这一步只安装桌面程序；插件按下方方式添加。
+可以[下载完整安装包](https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.21.0-beta.7/MatterDesk-0.21.0-beta.7-win-x64.zip)，解压后双击 `install.cmd`，选择使用的 Agent，再按窗口中的引导完成设置。无需管理员权限。选择 DSH 时，这一步只安装桌面程序；插件按下方方式添加。
 
 如果需要手动安装 Codex 插件，在 PowerShell 中依次执行：
 
