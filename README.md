@@ -4,7 +4,7 @@
 
 群消息太多、同时跟进好几件事时，事序把散落的讨论放在同一事项下，帮你看清自己要做什么、还在等谁的反馈。
 
-[开始使用](#开始使用) · [下载测试版](https://github.com/ThFoolL/matterdesk-releases/releases/tag/v0.21.0-beta.9) · [反馈问题](https://github.com/ThFoolL/matterdesk-releases/issues)
+[开始使用](#开始使用) · [下载测试版](https://github.com/ThFoolL/matterdesk-releases/releases/tag/v0.21.0-beta.10) · [反馈问题](https://github.com/ThFoolL/matterdesk-releases/issues)
 
 ![事序的桌面便签与分栏看板](docs/overview.png)
 
@@ -52,6 +52,8 @@ Agent 会按照这里的说明准备对应插件和桌面程序，安装在后�
 
 引导只显示当前步骤，完成后进入下一步；中断或重启后可以继续。
 
+如果这台电脑无法读取已绑定应用的 App Secret，引导会提供本机密码表单，重新保存后继续本人授权。应用密钥只在本机录入，不需要发到对话里。
+
 ![首次引导：说明关注范围，再连接飞书](docs/setup.png)
 
 ### 3. 放在桌面，开始跟进
@@ -65,7 +67,7 @@ Agent 会按照这里的说明准备对应插件和桌面程序，安装在后�
 <details>
 <summary>其他安装方式</summary>
 
-可以[下载完整安装包](https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.21.0-beta.9/MatterDesk-0.21.0-beta.9-win-x64.zip)，解压后双击 `install.cmd`，选择使用的 Agent，再按窗口中的引导完成设置。无需管理员权限。选择 DSH 时，这一步只安装桌面程序；插件按下方方式添加。
+可以[下载完整安装包](https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.21.0-beta.10/MatterDesk-0.21.0-beta.10-win-x64.zip)，解压后双击 `install.cmd`，选择使用的 Agent，再按窗口中的引导完成设置。无需管理员权限。选择 DSH 时，这一步只安装桌面程序；插件按下方方式添加。
 
 如果需要手动安装 Codex 插件，在 PowerShell 中依次执行：
 

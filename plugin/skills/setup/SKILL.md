@@ -40,6 +40,8 @@ Codex 本机安装完成后，可调用 `matterdesk_launcher` 显示原生「事
 
 首次连接先执行 connect/check，实际检查 lark-cli 的应用配置及本人在线验证。feishu.user 显示姓名、用户 ID 和验证状态；没有应用配置时无法先进行 CLI 本人登录，需要先新建或绑定应用。已配置的连接只是候选，向用户展示真实名称与 App ID，询问是否合适再 select_app。无合适应用则优先推荐为自己新建。开发者后台网页登录仅用于管理应用，不表示 CLI 本人登录。
 
+应用 ID 或用户资料存在不代表本机凭据可用。credentialsRequired 或 credentials 阶段表示应用凭据需要修复；缺 App Secret 的明确诊断及授权报错里的缺少参数 client_secret 都应先补录凭据，不能反复发起本人登录、扩展消息权限或要求重建已授权应用。auth status 的只读身份诊断与 doctor 使用相同检查，只报告凭据是否可用，不读取或输出密钥。不要把普通机器人身份失败当成缺 Secret；已验证的本人身份仍可读取资料。用 connections_open 打开本机连接页，由用户在密码表单重新保存当前应用的 App Secret，然后自动接续本人授权。保持已有应用 ID、个人设置和其他 CLI 配置；具名 profile 原位修复，旧的无名 profile 保留并另建独立绑定。参数名 client_secret 可以保留在脱敏错误中，实际值不能进入对话、命令行参数或日志。
+
 不能因为 lark-cli 已配置其他工具的应用就自动借用。connect/check 返回 choose-app 时，detectedAppId/detectedAppName 仅表示已保存的连接候选；同时展示实际应用名称和 App ID，缺少名称时由 Agent 在开发者后台核对，不让用户手填名称，不为读取名称额外申请权限。核对后可用 confirm_app_name 补充当前候选名称，该操作不绑定应用；用户明确选择后执行 select_app（appId 使用 detectedAppId，名称已核实时传真实 appName；暂时未知时使用 App ID 识别并继续）。已绑定应用的缺失名称同样通过 confirm_app_name 保存，不重置授权。已经为事序明确绑定的应用、本人授权及升级前的事序连接继续使用，不能要求重建。已有其他合适应用由 Agent 核对后通过 connections_open 的本机安全表单绑定，不在对话中输入密钥。
 
 用户选择新建后执行 create_app；缺 CLI 时 install_cli。Agent 自动发起官方向导，处理配置接收、缺失权限核对、本人授权接续和读取验证，让用户只做必要的确认与本人扫码。新建使用独立命名 profile，保留其他工具的应用、授权和默认配置。创建中断后先 connect 检查已保存结果，避免重复创建。cancel 停止当前引导，不删除已创建的远端应用。
