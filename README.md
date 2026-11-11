@@ -4,7 +4,7 @@
 
 群消息太多、同时跟进好几件事时，事序把散落的讨论放在同一事项下，帮你看清自己要做什么、还在等谁的反馈。
 
-[开始使用](#开始使用) · [下载测试版](https://github.com/ThFoolL/matterdesk-releases/releases/tag/v0.21.0-beta.8) · [反馈问题](https://github.com/ThFoolL/matterdesk-releases/issues)
+[开始使用](#开始使用) · [下载测试版](https://github.com/ThFoolL/matterdesk-releases/releases/tag/v0.21.0-beta.9) · [反馈问题](https://github.com/ThFoolL/matterdesk-releases/issues)
 
 ![事序的桌面便签与分栏看板](docs/overview.png)
 
@@ -48,7 +48,7 @@ Agent 会按照这里的说明准备对应插件和桌面程序，安装在后�
 
 在首次引导中，用日常语言说明主要关注的业务、职责，以及不需要跟进的内容。比如：“负责客户项目的需求和进度协调，关注风险与待确认的决定。”
 
-接着连接飞书，确认消息范围并按需添加云文档。**群聊和私聊默认开启，无需逐个选择群**；首次巡检默认读取最近 3 天，可以在开始前调整。使用已有应用时，先登录飞书开发者后台，由 Agent 核对并绑定你选中的应用，再完成本人授权，不用手填应用名称；没有合适的应用则推荐新建。Agent 会处理能自动完成的配置，你只需必要的确认和本人授权。只申请需要的用户读取权限，云文档按需补充。优先走免审或应用开发者本人免发布的路径；消息搜索能否直接使用，以飞书后台和读取验证为准。
+接着连接飞书，确认消息范围并按需添加云文档。**群聊和私聊默认开启，无需逐个选择群**；首次巡检默认读取最近 3 天，可以在开始前调整。引导会实际检查 lark-cli 的本人登录，显示登录用户和应用名称、ID。已有合适应用可以直接选择；没有应用配置时，先新建或绑定应用，再完成 CLI 本人授权。新建会自动打开官方配置窗口，Agent 代填并核对读取权限，你只需必要的登录和确认。开发者后台网页登录仅用于管理应用。只申请需要的用户读取权限，云文档按需补充。优先走免审或应用开发者本人免发布的路径；消息搜索能否直接使用，以飞书后台和读取验证为准。
 
 引导只显示当前步骤，完成后进入下一步；中断或重启后可以继续。
 
@@ -65,7 +65,7 @@ Agent 会按照这里的说明准备对应插件和桌面程序，安装在后�
 <details>
 <summary>其他安装方式</summary>
 
-可以[下载完整安装包](https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.21.0-beta.8/MatterDesk-0.21.0-beta.8-win-x64.zip)，解压后双击 `install.cmd`，选择使用的 Agent，再按窗口中的引导完成设置。无需管理员权限。选择 DSH 时，这一步只安装桌面程序；插件按下方方式添加。
+可以[下载完整安装包](https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.21.0-beta.9/MatterDesk-0.21.0-beta.9-win-x64.zip)，解压后双击 `install.cmd`，选择使用的 Agent，再按窗口中的引导完成设置。无需管理员权限。选择 DSH 时，这一步只安装桌面程序；插件按下方方式添加。
 
 如果需要手动安装 Codex 插件，在 PowerShell 中依次执行：
 

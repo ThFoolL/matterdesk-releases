@@ -38,7 +38,7 @@ Codex 本机安装完成后，可调用 `matterdesk_launcher` 显示原生「事
 
 用户要接入时，用 `matterdesk_connections_action` 的 `request: {action:"connect",source:"feishu"}` 检测并启动引导；只询问状态时用 check。异步结果用 `matterdesk_connections_get` 读取，nextSteps 给出当前步骤、说明、下一步 action 或官方 url。用 `matterdesk_connections_open` 打开同一份本机引导页面，尤其是等待用户授权或输入凭据时。不要自动扩大采集范围。
 
-首次连接先询问用户是否已有适合事序的应用。已有应用的选择流程是：先登录 https://open.feishu.cn/app 的开发者后台，查看本人有权管理的应用并核对名称与用途，再绑定所选应用，最后完成本人 OAuth 授权读取资料。开发者后台登录与应用之上的本人授权是两步，不能要求先在没有应用的情况下 OAuth 登录来列应用，也不能把用户可用应用列表当成开发者的应用列表。没有合适应用则优先推荐为自己新建。
+首次连接先执行 connect/check，实际检查 lark-cli 的应用配置及本人在线验证。feishu.user 显示姓名、用户 ID 和验证状态；没有应用配置时无法先进行 CLI 本人登录，需要先新建或绑定应用。已配置的连接只是候选，向用户展示真实名称与 App ID，询问是否合适再 select_app。无合适应用则优先推荐为自己新建。开发者后台网页登录仅用于管理应用，不表示 CLI 本人登录。
 
 不能因为 lark-cli 已配置其他工具的应用就自动借用。connect/check 返回 choose-app 时，detectedAppId/detectedAppName 仅表示已保存的连接候选；同时展示实际应用名称和 App ID，缺少名称时由 Agent 在开发者后台核对，不让用户手填名称，不为读取名称额外申请权限。核对后可用 confirm_app_name 补充当前候选名称，该操作不绑定应用；用户明确选择后执行 select_app（appId 使用 detectedAppId，名称已核实时传真实 appName；暂时未知时使用 App ID 识别并继续）。已绑定应用的缺失名称同样通过 confirm_app_name 保存，不重置授权。已经为事序明确绑定的应用、本人授权及升级前的事序连接继续使用，不能要求重建。已有其他合适应用由 Agent 核对后通过 connections_open 的本机安全表单绑定，不在对话中输入密钥。
 
@@ -54,7 +54,9 @@ appMissingScopes / permissionRequest 是当前功能的最小用户权限清单�
 
 报告实际读取验证结果，区分“保存凭据”“授权有效”“项目/文档读取通过”和“已开启采集”。连接过程只读远端资料，不发消息或写回工单。多人分发不包含作者或同事的个人凭据；公司统一应用密钥不能随客户端分发，应由管理员按内部方案管理。
 
-首次没有事序连接时，先打开 https://open.feishu.cn/app 引导本人登录飞书开发者后台，再从本人有权管理的应用中核对并选择；调用 confirm_console_login 仅记录用户已完成该引导步骤，不能把它当作消息读取授权成功。不得要求用户手填应用名称。应用名称优先自动读取，缺少元数据权限时由 Agent 在已登录页面核对，并通过 confirm_app_name 保存真实名称；只显示应用ID作为暂时识别，不为读取名称扩大权限。CLI 已保存的连接只是候选，不代表开发者后台全部应用。没有适合应用时调用 create_app，官方向导生成登录/创建页面和二维码，完成后自动接续读取授权。默认开启简单沟通自动完成，当前最小权限因此包括表情读取；用户关闭此功能时不额外申请表情权限。
+桌面连接助手自动打开官方配置窗口并运行 Agent：缺应用名用 configure_app（purpose:name）核对，缺读取权限用 configure_app（purpose:permissions）代填固定最小 JSON 并核对选择范围。用户自己登录后台；automation.stage 为 login 后用户完成登录才能 continue_setup_agent（approve:false）。stage 为 confirm 时，先告知准备好的内容及权限，用户确认后才能 approve:true；不能 Agent 自行代确认。页面变化可重新检查，模型失败保留现有连接。禁止调用 application/v6/scopes/apply：它申请管理员授权且不能限定清单，不等于免审权限配置。遇到必需权限实际需要审批或官方页面不能核对最小范围时，说明阻碍，不自动提交。
+
+创建应用调用 create_app，返回的官方链接自动打开并提供二维码，无需再点击打开。默认的官方权限若过宽，助手只在新建或本次申请弹框调整，保留已有应用原有权限。CLI 收到创建结果后自动接续本人授权。应用名称优先从 auth status --verify 的 identities.bot.appName 或 bot/v3/info 读取；不额外申请应用管理或通讯录权限。本人姓名缺失时只读取基础 user_info 并核对 open_id。网页操作结束后由 CLI 重新验证本人身份与实际读取；不能把网页 finish 当成成功连接。默认开启简单沟通自动完成，因此最小清单按需含表情读取。
 
 ## 随 Agent 自动启动
 
