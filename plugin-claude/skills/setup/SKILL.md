@@ -46,7 +46,7 @@ Codex 本机安装完成后，可调用 `matterdesk_launcher` 显示原生「事
 
 用户选择新建后执行 create_app；缺 CLI 时 install_cli。Agent 自动发起官方向导，处理配置接收、缺失权限核对、本人授权接续和读取验证，让用户只做必要的确认与本人扫码。新建使用独立命名 profile，保留其他工具的应用、授权和默认配置。创建中断后先 connect 检查已保存结果，避免重复创建。cancel 停止当前引导，不删除已创建的远端应用。
 
-connect 会自动发起缺少的本人授权；桌面窗口生成官方授权链接后自动打开，同时保留 handoff 的原始链接和二维码。打开失败时引导点击备用链接或扫码；生成失败时根据脱敏的飞书返回原因核对配置，不把生成失败当成等待用户授权。添加文档时会检查对应读取权限，授权后继续验证并保存关注链接。原样展示 handoff 的链接和二维码，交还用户，用户明确完成后 continue；不要展示链接后立即轮询授权。授权过期则重新发起。
+选择或新建应用后，connect 先建立 CLI 本人身份：应用凭据可用而本人未验证时，仅用 offline_access 发起最小本人授权，不先因消息或文档权限缺失将用户转去开发者后台。所有官方创建、授权及后台页面都原样交给系统默认浏览器；不要另建 Electron、自动化或隔离浏览器窗口。授权链接生成后立即打开，并显示 handoff 的原始链接和二维码，二维码慢或失败仍可用链接继续。浏览器打开失败保留备用链接/二维码；CLI 根本未生成链接时根据脱敏报错修复，不当成等待授权。用户明确完成后 continue，在线核对并显示真实姓名和用户 ID，再配置最小读取权限并发起补充授权。handoff.purpose=identity 是本人登录，access 是补充读取授权；二者都不是后台网页登录。添加文档仅补需要的读取权限，验证通过后保存。原样展示链接和二维码并交还用户，不立即轮询。过期后重新发起。
 
 appMissingScopes / permissionRequest 是当前功能的最小用户权限清单。基础消息需要 search:message、im:message.group_msg:get_as_user、im:message.p2p_msg:get_as_user、im:chat:read；不申请宽泛的消息读写权限。云文档仅在添加链接或用户明确选择时申请 docx:document:readonly；wiki:node:read 只在知识库链接需要时追加。im:message.reactions:read 仅在开启简单沟通自动完成后申请。offline_access 只用于 OAuth 续期，不导入应用 API 权限。不要使用 --domain all、全量 --recommend、写入/发送、通讯录或机器人事件权限；高级实时事件另行按用户选择配置，不是接入前提。
 
@@ -56,7 +56,7 @@ appMissingScopes / permissionRequest 是当前功能的最小用户权限清单�
 
 报告实际读取验证结果，区分“保存凭据”“授权有效”“项目/文档读取通过”和“已开启采集”。连接过程只读远端资料，不发消息或写回工单。多人分发不包含作者或同事的个人凭据；公司统一应用密钥不能随客户端分发，应由管理员按内部方案管理。
 
-桌面连接助手自动打开官方配置窗口并运行 Agent：缺应用名用 configure_app（purpose:name）核对，缺读取权限用 configure_app（purpose:permissions）代填固定最小 JSON 并核对选择范围。用户自己登录后台；automation.stage 为 login 后用户完成登录才能 continue_setup_agent（approve:false）。stage 为 confirm 时，先告知准备好的内容及权限，用户确认后才能 approve:true；不能 Agent 自行代确认。页面变化可重新检查，模型失败保留现有连接。禁止调用 application/v6/scopes/apply：它申请管理员授权且不能限定清单，不等于免审权限配置。遇到必需权限实际需要审批或官方页面不能核对最小范围时，说明阻碍，不自动提交。
+configure_app 在默认浏览器打开官方后台，返回 setupRequest（kind、appId、url、scopes）；automation.stage=agent 表示待当前宿主 Agent 处理，不能说成桌面已自动代填。缺名称用 purpose:name 核对，名称不可读不阻断本人登录；未验证本人时先完成登录，再配置 purpose:permissions。宿主有访问默认浏览器的工具时，Agent 应直接处理返回页面、代填 permissionRequest 最小 JSON、核对用户权限与范围，让本人仅做登录和最终确认；不要把可代填的工作改成要求用户手动复制权限清单。没有相应浏览器工具时如实说明并保留官方链接、权限清单及验证入口，不另开独立浏览器或声称操作成功。页面处理完成后 continue_setup_agent 仅重新检查 CLI 和接续补充读取授权；approve 不替用户点击网页确认。用户完成授权后 continue，以实际身份与读取结果判断成功。禁止调用 application/v6/scopes/apply：它申请管理员授权且不能限定清单，不等于免审配置。遇到必要审批或无法核对最小范围时，说明阻碍，不自动提交。
 
 创建应用调用 create_app，返回的官方链接自动打开并提供二维码，无需再点击打开。默认的官方权限若过宽，助手只在新建或本次申请弹框调整，保留已有应用原有权限。CLI 收到创建结果后自动接续本人授权。应用名称优先从 auth status --verify 的 identities.bot.appName 或 bot/v3/info 读取；不额外申请应用管理或通讯录权限。本人姓名缺失时只读取基础 user_info 并核对 open_id。网页操作结束后由 CLI 重新验证本人身份与实际读取；不能把网页 finish 当成成功连接。默认开启简单沟通自动完成，因此最小清单按需含表情读取。
 
