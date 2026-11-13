@@ -11,7 +11,7 @@
       "name": "matterdesk",
       "source": "./plugin-claude",
       "description": "按事项整理飞书讨论，用对话调整分类习惯",
-      "version": "0.21.0-beta.13"
+      "version": "0.21.0-beta.14"
     }
   ]
 }
