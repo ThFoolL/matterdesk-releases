@@ -1,8 +1,6 @@
-# MatterDesk · 事序
+# 事序：可以自动整理消息的桌面待办插件
 
-**把飞书里的讨论，整理成桌面上清楚的待办。**
-
-群消息太多、同时跟进好几件事时，事序把散落的讨论放在同一事项下，帮你看清自己要做什么、还在等谁的反馈。
+事序是一款桌面待办插件，可以手动记录事项，也能自动整理飞书消息，把同一件事的讨论和待办放在一起，方便跟进。
 
 [开始使用](#开始使用) · [下载测试版](https://github.com/ThFoolL/matterdesk-releases/releases/tag/v0.21.0-beta.15) · [反馈问题](https://github.com/ThFoolL/matterdesk-releases/issues)
 
