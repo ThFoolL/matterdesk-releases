@@ -4,7 +4,7 @@
 
 群消息太多、同时跟进好几件事时，事序把散落的讨论放在同一事项下，帮你看清自己要做什么、还在等谁的反馈。
 
-[开始使用](#开始使用) · [下载测试版](https://github.com/ThFoolL/matterdesk-releases/releases/tag/v0.21.0-beta.14) · [反馈问题](https://github.com/ThFoolL/matterdesk-releases/issues)
+[开始使用](#开始使用) · [下载测试版](https://github.com/ThFoolL/matterdesk-releases/releases/tag/v0.21.0-beta.15) · [反馈问题](https://github.com/ThFoolL/matterdesk-releases/issues)
 
 ![事序的桌面便签与分栏看板](docs/overview.png)
 
@@ -64,16 +64,18 @@ Agent 会按照这里的说明准备对应插件和桌面程序，安装在后�
 
 引导最后选择是否立即首次巡检。**自动巡检默认勾选，间隔1小时**；默认首次在下一个整点开始，后续从上次巡检完成时起计时。已有用户的巡检选择会保留，之后也可以随时手动巡检或在设置中调整。
 
-首次巡检会先读完所选时间范围内的信息，再结合完整会话梳理其中的话题。消息较多时可以继续使用便签；长会话会并行整理并保存进度，中断后继续。
+首次巡检会先读完所选时间范围内的信息，再结合完整会话梳理其中的话题。多个聊天可以同时处理，同一聊天的小话题一起整理，减少等待。消息较多时可以继续使用便签；每批保存进度，中断后继续，一段对话暂时超时不会挡住其他聊天。
 
 **首次安装完成后，事序默认随已启用插件的 Agent 启动，以后不用每次输入启动口令。** Codex 随桌面应用启动，Claude Code 在会话开始时启动，DSH 在插件加载时启动。可以在设置中关闭这个选项，也可以从 Agent 内再次打开。窗口隐藏后，点击托盘图标即可显示。
+
+开启自动跟随后，最后一个 Agent 退出时，事序也会保存进度并正常关闭；其他已安装事序的 Agent 仍运行时，保留共用窗口。
 
 首次配置可以稍后继续；也可以先跳过飞书连接，手动记录事项和待办。
 
 <details>
 <summary>其他安装方式</summary>
 
-可以[下载完整安装包](https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.21.0-beta.14/MatterDesk-0.21.0-beta.14-win-x64.zip)，解压后双击 `install.cmd`，选择使用的 Agent，再按窗口中的引导完成设置。无需管理员权限。选择 DSH 时，这一步只安装桌面程序；插件按下方方式添加。
+可以[下载完整安装包](https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.21.0-beta.15/MatterDesk-0.21.0-beta.15-win-x64.zip)，解压后双击 `install.cmd`，选择使用的 Agent，再按窗口中的引导完成设置。无需管理员权限。选择 DSH 时，这一步只安装桌面程序；插件按下方方式添加。
 
 如果需要手动安装 Codex 插件，在 PowerShell 中依次执行：
 
