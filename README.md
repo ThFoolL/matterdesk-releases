@@ -2,7 +2,7 @@
 
 事序是一款桌面待办插件，可以手动记录事项，也能自动整理飞书消息，把同一件事的讨论和待办放在一起，方便跟进。
 
-[开始使用](#开始使用) · [下载测试版](https://github.com/ThFoolL/matterdesk-releases/releases/tag/v0.21.0-beta.15) · [反馈问题](https://github.com/ThFoolL/matterdesk-releases/issues)
+[开始使用](#开始使用) · [下载测试版](https://github.com/ThFoolL/matterdesk-releases/releases/tag/v0.21.0-beta.16) · [反馈问题](https://github.com/ThFoolL/matterdesk-releases/issues)
 
 ![事序的桌面便签与分栏看板](docs/overview.png)
 
@@ -52,6 +52,8 @@ Agent 会按照这里的说明准备对应插件和桌面程序，安装在后�
 
 引导只显示当前步骤，完成后进入下一步；中断或重启后可以继续。
 
+**免打扰群默认跳过**，群内的 @消息和话题回复也会跳过，可以在采集设置中关闭。已跳过的信息保留本机历史，已有待办保留；取消群免打扰后继续整理新消息。
+
 选择已有应用时，在默认浏览器进入目标应用，再回到事序点「我已选好，继续」，无需粘贴应用链接。已保存的应用凭据会自动复用。
 
 如果这台电脑无法读取已绑定应用的 App Secret，引导会提供本机密码表单，重新保存后继续本人授权。应用密钥只在本机录入，不需要发到对话里。
@@ -73,7 +75,7 @@ Agent 会按照这里的说明准备对应插件和桌面程序，安装在后�
 <details>
 <summary>其他安装方式</summary>
 
-可以[下载完整安装包](https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.21.0-beta.15/MatterDesk-0.21.0-beta.15-win-x64.zip)，解压后双击 `install.cmd`，选择使用的 Agent，再按窗口中的引导完成设置。无需管理员权限。选择 DSH 时，这一步只安装桌面程序；插件按下方方式添加。
+可以[下载完整安装包](https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.21.0-beta.16/MatterDesk-0.21.0-beta.16-win-x64.zip)，解压后双击 `install.cmd`，选择使用的 Agent，再按窗口中的引导完成设置。无需管理员权限。选择 DSH 时，这一步只安装桌面程序；插件按下方方式添加。
 
 如果需要手动安装 Codex 插件，在 PowerShell 中依次执行：
 
