@@ -1,6 +1,7 @@
-﻿$ErrorActionPreference = 'Stop'
+﻿. (Join-Path $PSScriptRoot 'version.ps1')
+$ErrorActionPreference = 'Stop'
 $env:PSModulePath = (Join-Path $PSHOME 'Modules') + ';' + $env:PSModulePath
-$taskDataDirectory = if ($env:MATTERDESK_DATA_DIR) { $env:MATTERDESK_DATA_DIR } else { Join-Path $env:LOCALAPPDATA 'MatterDesk' }
+$taskDataDirectory = Get-MatterDeskDataDirectory
 $null = New-Item -ItemType Directory -Path $taskDataDirectory -Force
 $taskLock = $null
 try { $taskLock = [IO.File]::Open((Join-Path $taskDataDirectory 'component-install.lock'), 'OpenOrCreate', 'ReadWrite', 'None') } catch { exit 0 }
@@ -60,6 +61,17 @@ try {
   Set-MatterDeskInstallStage 'failed' '下载或安装未完成。请检查是否能打开 GitHub 的下载页面，再让 Agent 重试；已保存的事项和设置会保留。' $false
   exit 1
 } finally {
+  # Extracted installers are disposable, on success or failure. Validate the exact root first.
+  if ($taskExtract -and $taskCache) {
+    $taskCleanupRoot = [IO.Path]::GetFullPath($taskCache)
+    $taskCleanupTarget = [IO.Path]::GetFullPath($taskExtract)
+    if ($taskCleanupTarget.StartsWith($taskCleanupRoot + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase) -and
+        (Split-Path -Leaf $taskCleanupTarget) -match '^package-[a-f0-9]{32}$' -and
+        (Test-Path -LiteralPath $taskCleanupTarget -PathType Container) -and
+        -not ((Get-Item -LiteralPath $taskCleanupTarget).Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+      Remove-Item -LiteralPath $taskCleanupTarget -Recurse -Force -ErrorAction SilentlyContinue
+    }
+  }
   if ($taskClient) { $taskClient.Dispose() }
   if ($taskLock) { $taskLock.Dispose() }
 }

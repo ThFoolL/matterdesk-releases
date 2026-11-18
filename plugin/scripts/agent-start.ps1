@@ -1,6 +1,7 @@
 ﻿param([ValidateSet('codex','claude','dsh')][string]$Agent='claude',[int]$AgentProcessId=0)
+. (Join-Path $PSScriptRoot 'version.ps1')
 $ErrorActionPreference='Stop'
-$taskDirectory=if($env:MATTERDESK_DATA_DIR){$env:MATTERDESK_DATA_DIR}else{Join-Path $env:LOCALAPPDATA 'MatterDesk'}
+$taskDirectory=Get-MatterDeskDataDirectory
 $taskRegistration=Join-Path $taskDirectory 'install.json'
 if(-not(Test-Path -LiteralPath $taskRegistration)){exit 0}
 try{$taskSettings=Get-Content -LiteralPath (Join-Path $taskDirectory 'settings.json') -Raw -Encoding UTF8|ConvertFrom-Json;if($taskSettings.desktop.autoStartWithAgent -eq $false){exit 0}}catch{}

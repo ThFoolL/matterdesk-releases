@@ -2,7 +2,7 @@
 
 事序是一款桌面待办插件，可以手动记录事项，也能自动整理飞书消息，把同一件事的讨论和待办放在一起，方便跟进。
 
-[开始使用](#开始使用) · [下载测试版](https://github.com/ThFoolL/matterdesk-releases/releases/tag/v0.21.0-beta.17) · [反馈问题](https://github.com/ThFoolL/matterdesk-releases/issues)
+[开始使用](#开始使用) · [下载测试版](https://github.com/ThFoolL/matterdesk-releases/releases/tag/v0.21.0-beta.18) · [反馈问题](https://github.com/ThFoolL/matterdesk-releases/issues)
 
 ![事序的桌面便签与分栏看板](docs/overview.png)
 
@@ -11,6 +11,7 @@
 - **同一件事放在一起**：结合聊天上下文与相关云文档，把具体待办归到对应事项下，减少重复记录。
 - **围绕你的工作整理**：按你关注的业务和职责，区分需要处理、需要跟进和只需知悉的内容。
 - **随时看清进展**：桌面悬浮便签可以展开为分栏看板；待办保留消息时间和来源，方便回到飞书核对。
+- **选择喜欢的配色**：提供 Codex 绿和暖暖粉两套桌面配色，可以随时切换。
 - **用对话调整分类**：告诉 Agent “这几条是一件事”或“这类工作不用我跟进”，让后续整理更符合你的习惯。
 - **定时检查新信息**：连接飞书后，可以随时检查，也可以按自己的节奏开启定时更新。临时想到的事项也能手动添加。
 
@@ -75,7 +76,7 @@ Agent 会按照这里的说明准备对应插件和桌面程序，安装在后�
 <details>
 <summary>其他安装方式</summary>
 
-可以[下载完整安装包](https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.21.0-beta.17/MatterDesk-0.21.0-beta.17-win-x64.zip)，解压后双击 `install.cmd`，选择使用的 Agent，再按窗口中的引导完成设置。无需管理员权限。选择 DSH 时，这一步只安装桌面程序；插件按下方方式添加。
+可以[下载完整安装包](https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.21.0-beta.18/MatterDesk-0.21.0-beta.18-win-x64.zip)，解压后双击 `install.cmd`，选择使用的 Agent，再按窗口中的引导完成设置。无需管理员权限。选择 DSH 时，这一步只安装桌面程序；插件按下方方式添加。
 
 如果需要手动安装 Codex 插件，在 PowerShell 中依次执行：
 
@@ -107,6 +108,7 @@ dsh plugin --profile <当前使用的profile> add "git+https://github.com/ThFool
 - **飞书范围**：读取范围由你的应用权限、本人授权、开启的群聊和私聊范围及添加的文档共同决定。事序只读取资料，不代你发送消息或修改云文档。
 - **简单沟通**：新安装默认自动完成有明确答复或肯定表情的纯沟通待办，可在设置中关闭。实际执行的工作和整个事项仍需手动完成；升级保留已有开关。
 - **个人数据**：消息、待办和个人设置保存在本机；整理时，相关内容会发送到你使用的模型服务。配置导出不包含登录信息。详见[数据说明](PRIVACY.md)。
+- **存放位置**：可在设置中将已有数据迁移到其他磁盘，缓存、日志和备份会定期清理。
 - **分享与更新**：可以把这个页面发给同事，每个人独立设置和授权。需要更新时，告诉 Agent“帮我检查并更新事序”；已保存的事项和个人设置会保留。同机共享支持三个入口同时使用，暂不支持跨设备同步。
 
 较早的版本如果提示先退出，请从托盘退出事序，再让 Agent 继续更新。后续更新可由 Agent 安全退出并重新打开。
