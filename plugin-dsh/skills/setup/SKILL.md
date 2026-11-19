@@ -40,9 +40,9 @@ Codex 本机安装完成后，可调用 `matterdesk_launcher` 显示原生「事
 
 首次连接先执行 connect/check，实际检查 lark-cli 的应用配置及本人在线验证。feishu.user 显示姓名、用户 ID 和验证状态；没有应用配置时无法先进行 CLI 本人登录，需要先新建或绑定应用。已配置的连接只是候选，向用户展示真实名称与 App ID，询问是否合适再 select_app。无合适应用则优先推荐为自己新建。开发者后台网页登录仅用于管理应用，不表示 CLI 本人登录。
 
-应用 ID 或用户资料存在不代表本机凭据可用。credentialsRequired 或 credentials 阶段表示应用凭据需要修复；缺 App Secret 的明确诊断及授权报错里的缺少参数 client_secret 都应先补录凭据，不能反复发起本人登录、扩展消息权限或要求重建已授权应用。auth status 的只读身份诊断与 doctor 使用相同检查，只报告凭据是否可用，不读取或输出密钥。不要把普通机器人身份失败当成缺 Secret；已验证的本人身份仍可读取资料。用 connections_open 打开本机连接页，由用户在密码表单重新保存当前应用的 App Secret，然后自动接续本人授权。保持已有应用 ID、个人设置和其他 CLI 配置；具名 profile 原位修复，旧的无名 profile 保留并另建独立绑定。参数名 client_secret 可以保留在脱敏错误中，实际值不能进入对话、命令行参数或日志。
+应用 ID 或用户资料存在不代表本机凭据可用。credentialsRequired 或 credentials 阶段表示应用凭据需要修复；缺 App Secret 的明确诊断及授权报错里的缺少参数 client_secret 都应先补录凭据，不能反复发起本人登录、扩展消息权限或要求重建已授权应用。auth status 的只读身份诊断与 doctor 使用相同检查，只报告凭据是否可用，不读取或输出密钥。不要把普通机器人身份失败当成缺 Secret；已验证的本人身份仍可读取资料。用 connections_open 打开本机连接页，优先 connect_selected_app 从默认浏览器所选应用凭证页在本机安全接收 App Secret，再自动接续本人授权。当前页要求身份验证时由本人完成；无法可靠接收才使用本机密码表单备用入口。Agent 不读取或展示密钥。保持已有应用 ID、个人设置和其他 CLI 配置；具名 profile 原位修复，旧的无名 profile 保留并另建独立绑定。参数名 client_secret 可以保留在脱敏错误中，实际值不能进入对话、命令行参数或日志。
 
-不能因为 lark-cli 已配置其他工具的应用就自动借用。connect/check 返回 choose-app 时，detectedAppId/detectedAppName 仅表示已保存的连接候选；同时展示实际应用名称和 App ID，缺少名称时由 Agent 在开发者后台核对，不让用户手填名称，不为读取名称额外申请权限。核对后可用 confirm_app_name 补充当前候选名称，该操作不绑定应用；用户明确选择后执行 select_app（appId 使用 detectedAppId，名称已核实时传真实 appName；暂时未知时使用 App ID 识别并继续）。已绑定应用的缺失名称同样通过 confirm_app_name 保存，不重置授权。已经为事序明确绑定的应用、本人授权及升级前的事序连接继续使用，不能要求重建。已有其他合适应用由 Agent 核对后通过 connections_open 的本机安全表单绑定，不在对话中输入密钥。
+不能因为 lark-cli 已配置其他工具的应用就自动借用。connect/check 返回 choose-app 时，detectedAppId/detectedAppName 仅表示已保存的连接候选；同时展示实际应用名称和 App ID，缺少名称时由 Agent 在开发者后台核对，不让用户手填名称，不为读取名称额外申请权限。核对后可用 confirm_app_name 补充当前候选名称，该操作不绑定应用；用户明确选择后执行 select_app（appId 使用 detectedAppId，名称已核实时传真实 appName；暂时未知时使用 App ID 识别并继续）。已绑定应用的缺失名称同样通过 confirm_app_name 保存，不重置授权。已经为事序明确绑定的应用、本人授权及升级前的事序连接继续使用，不能要求重建。已有其他合适应用由 Agent 核对后通过网页选择和本机连接助手绑定，不在对话中输入密钥。
 
 用户选择新建后执行 create_app；缺 CLI 时 install_cli。Agent 自动发起官方向导，处理配置接收、缺失权限核对、本人授权接续和读取验证，让用户只做必要的确认与本人扫码。新建使用独立命名 profile，保留其他工具的应用、授权和默认配置。创建中断后先 connect 检查已保存结果，避免重复创建。cancel 停止当前引导，不删除已创建的远端应用。
 
@@ -50,7 +50,7 @@ Codex 本机安装完成后，可调用 `matterdesk_launcher` 显示原生「事
 
 所有官方创建、授权及后台页面原样交给系统默认浏览器；不要另建 Electron、自动化或隔离浏览器窗口。授权链接生成后立即打开，并显示 handoff 的原始链接和二维码，二维码慢或失败仍可用链接继续。浏览器打开失败保留备用链接；CLI 未生成链接时根据实际报错修复，不显示等待授权。用户在页面点“我已授权，验证连接”或向 Agent 明确完成后 continue，在线核对本人姓名和用户 ID，再验证消息读取。handoff.purpose=identity 表示首次本人读取授权，access 表示已验证账号的补充读取授权；均不等于后台网页登录。添加文档仅补需要的读取权限，验证通过后保存。原样展示链接和二维码并交还用户，不立即轮询。过期后重新发起。
 
-连接页面只展开当前步骤，主操作以 nextSteps 为准。choose-app 提供“使用此连接”，凭据损坏时为“修复此连接”；不能默认推荐已有用户重新创建应用。credentials 在本机表单保存凭据。setupRequest 的“已配置，申请本人授权”重查身份后直接请求官方 OAuth，显示链接或具体失败原因；不再反复检查同一份应用权限清单，不替用户确认网页权限。官方创建中自动等待结果，不要求多点一个完成按钮。已验证本人姓名才是当前账号，未验证姓名仅作为折叠的历史记录。不要让用户在一页同时处理多组继续、重试或登录按钮。
+连接页面只展开当前步骤，主操作以 nextSteps 为准。choose-app 提供“使用此连接”，凭据损坏时为“修复此连接”；不能默认推荐已有用户重新创建应用。credentials 优先自动修复所选应用的本机凭据，无法接收时才使用本机表单。手动提交立即进入后台，connections_get 显示验证进度及脱敏失败原因，不等待网络请求完成才返回。setupRequest 的“已配置，申请本人授权”重查身份后直接请求官方 OAuth，显示链接或具体失败原因；不再反复检查同一份应用权限清单，不替用户确认网页权限。官方创建中自动等待结果，不要求多点一个完成按钮。已验证本人姓名才是当前账号，未验证姓名仅作为折叠的历史记录。不要让用户在一页同时处理多组继续、重试或登录按钮。
 
 appMissingScopes / permissionRequest 是当前功能的最小用户权限清单。基础消息需要 search:message、im:message.group_msg:get_as_user、im:message.p2p_msg:get_as_user、im:chat:read；不申请宽泛的消息读写权限。云文档仅在添加链接或用户明确选择时申请 docx:document:readonly；wiki:node:read 只在知识库链接需要时追加。im:message.reactions:read 仅在开启简单沟通自动完成后申请。offline_access 只用于 OAuth 续期，不导入应用 API 权限。不要使用 --domain all、全量 --recommend、写入/发送、通讯录或机器人事件权限；高级实时事件另行按用户选择配置，不是接入前提。
 
@@ -62,7 +62,7 @@ appMissingScopes / permissionRequest 是当前功能的最小用户权限清单�
 
 真实授权或读取错误明确指出应用权限未开通后，configure_app 在默认浏览器打开官方后台，返回 setupRequest（kind、appId、url、scopes）；没有该证据时 purpose:permissions 直接接续本人授权。automation.stage=agent 表示待当前宿主 Agent 处理，不能说成桌面已自动代填。缺名称用 purpose:name 核对，名称不可读不阻断本人登录；应用凭据可用且已确认绑定后直接请求本人读取授权，不先强制配置 purpose:permissions。宿主有访问默认浏览器的工具时，Agent 应直接处理返回页面、代填 permissionRequest 最小 JSON、核对用户权限与范围，让本人仅做登录和最终确认；不要把可代填的工作改成要求用户手动复制权限清单。没有相应浏览器工具时如实说明并保留官方链接、权限清单及验证入口，不另开独立浏览器或声称操作成功。页面处理完成后 continue_setup_agent 仅重新检查 CLI 和接续补充读取授权；approve 不替用户点击网页确认。用户完成授权后 continue，以实际身份与读取结果判断成功。禁止调用 application/v6/scopes/apply：它申请管理员授权且不能限定清单，不等于免审配置。遇到必要审批或无法核对最小范围时，说明阻碍，不自动提交。
 
-选择网页上的已有应用时调用 choose_existing_app，自动在默认浏览器打开应用列表。用户在默认浏览器进入具体应用后，回到连接页点“我已选好，继续”；read_selected_app 只在用户点击时读取默认浏览器原生地址栏，匹配当前应用，再按 App ID 查找并复用本机 profile，不修改 CLI 默认配置。无需用户复制或粘贴链接。多个应用窗口时由用户选择；读取不到时保持原连接并提示保留目标应用为当前标签页后重试。当前系统或浏览器不支持时，可由宿主 Agent 协助选择，use_app_link 只供 Agent 提交已观察到的应用页面。未找到凭据时才在本机密码表单补录 Secret，不要求手填 App ID，也不能声称网页会自动回传旧应用密钥。停止连接在每一步都可用，保留已存配置与授权。
+选择网页上的已有应用时调用 choose_existing_app，自动在默认浏览器打开应用列表。用户在默认浏览器进入具体应用后，回到连接页点“我已选好，继续”；read_selected_app 只在用户点击时读取默认浏览器原生地址栏，匹配当前应用，再按 App ID 查找并复用本机 profile，不修改 CLI 默认配置。无需用户复制或粘贴链接。多个应用窗口时由用户选择；读取不到时保持原连接并提示保留目标应用为当前标签页后重试。当前系统或浏览器不支持时，可由宿主 Agent 协助选择，use_app_link 只供 Agent 提交已观察到的应用页面。未找到凭据时由桌面服务 connect_selected_app 打开所选应用的凭证页并在本机安全接收 Secret；浏览器或页面不支持时才提示重试和手动备用入口，不要求手填 App ID。此接收仅由桌面服务执行，不向 Agent、模型、日志或页面状态返回 Secret。官方 CLI 没有任意已有应用自动回传密钥的通用接口，不能把选中网页或收到 App ID 描述为已绑定。停止连接在每一步都可用，保留已存配置与授权。
 
 创建应用调用 create_app，返回的官方链接自动打开并提供二维码，无需再点击打开。默认的官方权限若过宽，助手只在新建或本次申请弹框调整，保留已有应用原有权限。CLI 收到创建结果后核对应用凭据并直接接续本人读取授权，不等待应用权限清单齐全。应用名称优先从 auth status --verify 的 identities.bot.appName 或 bot/v3/info 读取；不额外申请应用管理或通讯录权限。本人姓名缺失时只读取基础 user_info 并核对 open_id。网页操作结束后由 CLI 重新验证本人身份与实际读取；不能把网页 finish 当成成功连接。默认开启简单沟通自动完成，因此最小清单按需含表情读取。
 
