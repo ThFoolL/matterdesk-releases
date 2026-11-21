@@ -1,4 +1,5 @@
-﻿. (Join-Path $PSScriptRoot 'version.ps1')
+﻿param([ValidateSet('status','install')][string]$Action)
+. (Join-Path $PSScriptRoot 'version.ps1')
 $ErrorActionPreference = 'Stop'
 [Console]::InputEncoding = [Text.UTF8Encoding]::new($false)
 [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)
@@ -17,17 +18,19 @@ function Get-MatterDeskSetupStatus {
       $taskStatus.message = '安装已中断，可以让 Agent 重新安装；已保存的事项和设置会保留。'
     }
   }
+  $taskInstalledRoot = Join-Path $env:LOCALAPPDATA ('MatterDeskApp\' + $taskComponent.version)
+  $taskRegistered = $null
+  try { $taskRegistered = Get-Content -LiteralPath (Join-Path $taskDataDirectory 'install.json') -Raw -Encoding UTF8 | ConvertFrom-Json } catch { }
+  $taskInstalled = $taskRegistered.executable -eq (Join-Path $taskInstalledRoot 'MatterDesk.exe') -and (Test-Path -LiteralPath (Join-Path $taskInstalledRoot 'MatterDesk.exe')) -and (Test-Path -LiteralPath (Join-Path $taskInstalledRoot 'runtime\node.exe'))
   if ($taskStatus -and $taskStatus.version -eq $taskComponent.version) {
-    $taskInstalledRoot = Join-Path $env:LOCALAPPDATA ('MatterDeskApp\' + $taskComponent.version)
-    $taskRegistered = $null
-    try { $taskRegistered = Get-Content -LiteralPath (Join-Path $taskDataDirectory 'install.json') -Raw -Encoding UTF8 | ConvertFrom-Json } catch { }
     if ($taskStatus.stage -ne 'ready' -or ($taskRegistered.executable -eq (Join-Path $taskInstalledRoot 'MatterDesk.exe') -and (Test-Path -LiteralPath (Join-Path $taskInstalledRoot 'MatterDesk.exe')) -and (Test-Path -LiteralPath (Join-Path $taskInstalledRoot 'runtime\node.exe')))) { return $taskStatus }
   }
+  if ($taskInstalled) { return @{version=$taskComponent.version;running=$false;stage='ready';message='事序已安装，可以打开悬浮窗继续设置或查看待办。'} }
   return @{ version=$taskComponent.version; running=$false; stage='not_installed'; message='尚未安装本版事序。可以让 Agent 帮你安装，完成后按窗口引导填写关注范围并连接飞书。' }
 }
 function Start-MatterDeskComponentInstall {
   $taskStatus = Get-MatterDeskSetupStatus
-  if ($taskStatus.running) { return $taskStatus }
+  if ($taskStatus.running -or $taskStatus.stage -eq 'ready') { return $taskStatus }
   $null = New-Item -ItemType Directory -Path $taskDataDirectory -Force
   $taskSetup = Join-Path $PSScriptRoot 'setup.ps1'
   $taskProcess = Start-Process -FilePath (Join-Path $PSHOME 'powershell.exe') -WindowStyle Hidden -ArgumentList @('-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'RemoteSigned', '-File', ('"' + $taskSetup + '"')) -PassThru
@@ -36,6 +39,11 @@ function Start-MatterDeskComponentInstall {
   return $taskStartedState
 }
 function Write-MatterDeskRpc($Value) { [Console]::Out.WriteLine(($Value | ConvertTo-Json -Depth 30 -Compress)) }
+if ($Action) {
+  $taskState = if ($Action -eq 'status') { Get-MatterDeskSetupStatus } else { Start-MatterDeskComponentInstall }
+  [Console]::Out.WriteLine(($taskState | ConvertTo-Json -Depth 15 -Compress))
+  exit 0
+}
 $taskTools = @(
   @{ name='matterdesk_setup_status'; description='查看事序的安装或更新进度。'; inputSchema=@{type='object';properties=@{};additionalProperties=$false}; annotations=@{readOnlyHint=$true} },
   @{ name='matterdesk_install_components'; description='按用户要求，在后台安装或更新事序，保留已保存的事项和设置。完成后打开首次引导。Codex和Claude Code新开会话加载完整工具；DeepSeek Harness在插件页关闭再开启事序一次。'; inputSchema=@{type='object';properties=@{};additionalProperties=$false}; annotations=@{readOnlyHint=$false;destructiveHint=$false} }
