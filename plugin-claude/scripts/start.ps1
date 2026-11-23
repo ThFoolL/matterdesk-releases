@@ -2,10 +2,10 @@
 $ErrorActionPreference = 'Stop'
 $profileRoot = Get-MatterDeskDataDirectory
 $registration = Join-Path $profileRoot 'install.json'
-if (-not (Test-Path -LiteralPath $registration)) { throw '事序尚未完成首次设置，请让 Agent 帮你安装并打开配置引导。' }
+if (-not (Test-Path -LiteralPath $registration)) { throw '有数尚未完成首次设置，请让 Agent 帮你安装并打开配置引导。' }
 $installation = Get-Content -LiteralPath $registration -Raw -Encoding UTF8 | ConvertFrom-Json
 foreach ($target in @($installation.executable, $installation.entry, $installation.workingDirectory)) {
-  if ($target -and ($target -match '["\r\n]' -or -not (Test-Path -LiteralPath $target))) { throw '暂时找不到事序的安装文件，请让 Agent 检查并修复安装。' }
+  if ($target -and ($target -match '["\r\n]' -or -not (Test-Path -LiteralPath $target))) { throw '暂时找不到有数的安装文件，请让 Agent 检查并修复安装。' }
 }
 # Electron hosts may use Node mode for their helpers. It must not reach the GUI.
 $taskElectronNodeMode = [Environment]::GetEnvironmentVariable('ELECTRON_RUN_AS_NODE', 'Process')

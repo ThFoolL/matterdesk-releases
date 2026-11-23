@@ -25,8 +25,8 @@ function Get-MatterDeskSetupStatus {
   if ($taskStatus -and $taskStatus.version -eq $taskComponent.version) {
     if ($taskStatus.stage -ne 'ready' -or ($taskRegistered.executable -eq (Join-Path $taskInstalledRoot 'MatterDesk.exe') -and (Test-Path -LiteralPath (Join-Path $taskInstalledRoot 'MatterDesk.exe')) -and (Test-Path -LiteralPath (Join-Path $taskInstalledRoot 'runtime\node.exe')))) { return $taskStatus }
   }
-  if ($taskInstalled) { return @{version=$taskComponent.version;running=$false;stage='ready';message='事序已安装，可以打开悬浮窗继续设置或查看待办。'} }
-  return @{ version=$taskComponent.version; running=$false; stage='not_installed'; message='尚未安装本版事序。可以让 Agent 帮你安装，完成后按窗口引导填写关注范围并连接飞书。' }
+  if ($taskInstalled) { return @{version=$taskComponent.version;running=$false;stage='ready';message='有数已安装，可以打开悬浮窗继续设置或查看待办。'} }
+  return @{ version=$taskComponent.version; running=$false; stage='not_installed'; message='尚未安装本版有数。可以让 Agent 帮你安装，完成后按窗口引导填写关注范围并连接飞书。' }
 }
 function Start-MatterDeskComponentInstall {
   $taskStatus = Get-MatterDeskSetupStatus
@@ -34,7 +34,7 @@ function Start-MatterDeskComponentInstall {
   $null = New-Item -ItemType Directory -Path $taskDataDirectory -Force
   $taskSetup = Join-Path $PSScriptRoot 'setup.ps1'
   $taskProcess = Start-Process -FilePath (Join-Path $PSHOME 'powershell.exe') -WindowStyle Hidden -ArgumentList @('-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'RemoteSigned', '-File', ('"' + $taskSetup + '"')) -PassThru
-  $taskStartedState = @{ version=$taskComponent.version; running=$true; stage='starting'; pid=$taskProcess.Id; processStartedAt=$taskProcess.StartTime.ToUniversalTime().ToString('o'); message='正在后台安装事序，可继续聊天。安装完成后会打开首次引导。' }
+  $taskStartedState = @{ version=$taskComponent.version; running=$true; stage='starting'; pid=$taskProcess.Id; processStartedAt=$taskProcess.StartTime.ToUniversalTime().ToString('o'); message='正在后台安装有数，可继续聊天。安装完成后会打开首次引导。' }
   if (-not (Get-MatterDeskSetupStatus).running) { [IO.File]::WriteAllText($taskStatusFile, ($taskStartedState | ConvertTo-Json -Compress), [Text.UTF8Encoding]::new($false)) }
   return $taskStartedState
 }
@@ -45,8 +45,8 @@ if ($Action) {
   exit 0
 }
 $taskTools = @(
-  @{ name='matterdesk_setup_status'; description='查看事序的安装或更新进度。'; inputSchema=@{type='object';properties=@{};additionalProperties=$false}; annotations=@{readOnlyHint=$true} },
-  @{ name='matterdesk_install_components'; description='按用户要求，在后台安装或更新事序，保留已保存的事项和设置。完成后打开首次引导。Codex和Claude Code新开会话加载完整工具；DeepSeek Harness在插件页关闭再开启事序一次。'; inputSchema=@{type='object';properties=@{};additionalProperties=$false}; annotations=@{readOnlyHint=$false;destructiveHint=$false} }
+  @{ name='matterdesk_setup_status'; description='查看有数的安装或更新进度。'; inputSchema=@{type='object';properties=@{};additionalProperties=$false}; annotations=@{readOnlyHint=$true} },
+  @{ name='matterdesk_install_components'; description='按用户要求，在后台安装或更新有数，保留已保存的事项和设置。完成后打开首次引导。Codex和Claude Code新开会话加载完整工具；DeepSeek Harness在插件页关闭再开启有数一次。'; inputSchema=@{type='object';properties=@{};additionalProperties=$false}; annotations=@{readOnlyHint=$false;destructiveHint=$false} }
 )
 while ($null -ne ($taskLine = [Console]::In.ReadLine())) {
   $taskRpc = $null
@@ -69,6 +69,6 @@ while ($null -ne ($taskLine = [Console]::In.ReadLine())) {
     }
     Write-MatterDeskRpc @{jsonrpc='2.0';id=$taskRpc.id;result=$taskResult}
   } catch {
-    Write-MatterDeskRpc @{jsonrpc='2.0';id=$taskRpc.id;error=@{code=-32603;message='事序安装入口暂时不可用，请重新设置或查看插件 README。'}}
+    Write-MatterDeskRpc @{jsonrpc='2.0';id=$taskRpc.id;error=@{code=-32603;message='有数安装入口暂时不可用，请重新设置或查看插件 README。'}}
   }
 }

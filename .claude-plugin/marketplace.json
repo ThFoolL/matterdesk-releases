@@ -4,7 +4,7 @@
     "name": "ThFoolL"
   },
   "metadata": {
-    "description": "把飞书里的讨论，整理成桌面上清楚的待办"
+    "description": "可以自动整理消息的桌面待办插件"
   },
   "plugins": [
     {

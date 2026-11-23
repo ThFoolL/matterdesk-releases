@@ -27,7 +27,7 @@ function Get-MatterDeskDataDirectory {
   if (-not (Test-Path -LiteralPath $taskLocator)) { return Join-Path $env:LOCALAPPDATA 'MatterDesk' }
   $taskLocation = Get-Content -LiteralPath $taskLocator -Raw -Encoding UTF8 | ConvertFrom-Json
   if ($taskLocation.version -ne 1 -or -not [IO.Path]::IsPathRooted($taskLocation.dataDirectory) -or -not (Test-Path -LiteralPath $taskLocation.dataDirectory -PathType Container)) {
-    throw '事序的数据目录不可用，请连接对应磁盘或修复存储设置；不会新建空数据。'
+    throw '有数的数据目录不可用，请连接对应磁盘或修复存储设置；不会新建空数据。'
   }
   return $taskLocation.dataDirectory
 }

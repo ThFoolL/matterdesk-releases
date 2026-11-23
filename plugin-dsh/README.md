@@ -1,6 +1,6 @@
-# MatterDesk · 事序
+# 有数 · MatterDesk
 
-把飞书里的讨论整理成桌面待办。在 DeepSeek Harness 的插件页面安装并启用后，让 Agent “帮我初始化事序并打开配置引导”。
+可以手动记录事项，也能自动整理飞书消息。在 DeepSeek Harness 的插件页面安装并启用后，让 Agent “帮我初始化有数并打开配置引导”。
 
 当前支持 Windows x64 和 DSH 0.2.2-rc.1，需要 Node.js 24.9 或更新版本。同机已安装 Codex 或 Claude Code 版时，共用事项、待办、规则和飞书连接，无需再次绑定。
 
