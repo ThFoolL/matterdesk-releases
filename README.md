@@ -29,7 +29,7 @@
 
 已有旧版时，先让原 Agent 更新有数，再添加其他入口。
 
-有数原名“事序”。当前下载包中可能仍显示旧名，中文名称会随下一版安装包更新；已有资料无需重新导入。
+有数原名“事序”。升级后名称与图标会统一更新，已有资料无需重新导入。
 
 ### 1. 让 Agent 帮你安装
 
@@ -78,7 +78,7 @@ Agent 会按照这里的说明准备对应插件和桌面程序，安装在后�
 <details>
 <summary>其他安装方式</summary>
 
-可以[下载完整安装包](https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.21.0-beta.23/MatterDesk-0.21.0-beta.23-win-x64.zip)，解压后双击 `install.cmd`，选择使用的 Agent，再按窗口中的引导完成设置。无需管理员权限。选择 DSH 时，这一步只安装桌面程序；插件按下方方式添加。
+可以[下载完整安装包](https://github.com/ThFoolL/matterdesk-releases/releases/download/v0.21.0-beta.24/MatterDesk-0.21.0-beta.24-win-x64.zip)，解压后双击 `install.cmd`，选择使用的 Agent，再按窗口中的引导完成设置。无需管理员权限。选择 DSH 时，这一步只安装桌面程序；插件按下方方式添加。
 
 如果需要手动安装 Codex 插件，在 PowerShell 中依次执行：
 
