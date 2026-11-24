@@ -22,6 +22,7 @@ if (-not $taskNode) {
   & (Join-Path $PSScriptRoot 'bootstrap.ps1')
   exit $LASTEXITCODE
 }
-$taskBridge = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\dist\bridge.mjs'))
+$taskBridge = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\dist\relay.mjs'))
+if (-not (Test-Path -LiteralPath $taskBridge)) { $taskBridge = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\dist\bridge.mjs')) }
 & $taskNode $taskBridge
 exit $LASTEXITCODE

@@ -4,6 +4,19 @@ $env:PSModulePath = (Join-Path $PSHOME 'Modules') + ';' + $env:PSModulePath
 $taskDataDirectory = Get-MatterDeskDataDirectory
 $null = New-Item -ItemType Directory -Path $taskDataDirectory -Force
 $taskLock = $null
+$taskOperationLock = $null
+try {
+  $taskOperationPath = Join-Path $taskDataDirectory 'component-operation.lock'
+  if (Test-Path -LiteralPath $taskOperationPath) {
+    try { $taskOwner = Get-Content -LiteralPath $taskOperationPath -Raw | ConvertFrom-Json } catch { exit 1 }
+    if (Get-Process -Id $taskOwner.pid -ErrorAction SilentlyContinue) { exit 1 }
+    Remove-Item -LiteralPath $taskOperationPath
+  }
+  $taskOperationLock = [IO.File]::Open($taskOperationPath,'CreateNew','ReadWrite','None')
+  $taskOperationBytes = [Text.Encoding]::UTF8.GetBytes((@{pid=$PID;nonce=[Guid]::NewGuid().ToString()} | ConvertTo-Json -Compress))
+  $taskOperationLock.Write($taskOperationBytes,0,$taskOperationBytes.Length)
+  $taskOperationLock.Flush()
+} catch { exit 1 }
 try { $taskLock = [IO.File]::Open((Join-Path $taskDataDirectory 'component-install.lock'), 'OpenOrCreate', 'ReadWrite', 'None') } catch { exit 0 }
 $taskStatusFile = Join-Path $taskDataDirectory 'component-install.json'
 $taskComponent = $null
@@ -74,4 +87,5 @@ try {
   }
   if ($taskClient) { $taskClient.Dispose() }
   if ($taskLock) { $taskLock.Dispose() }
+  if ($taskOperationLock) { $taskOperationLock.Dispose(); Remove-Item -LiteralPath $taskOperationPath -ErrorAction SilentlyContinue }
 }

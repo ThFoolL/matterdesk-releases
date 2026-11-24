@@ -1,6 +1,13 @@
 ﻿. (Join-Path $PSScriptRoot 'version.ps1')
 $ErrorActionPreference = 'Stop'
 $profileRoot = Get-MatterDeskDataDirectory
+$taskUpdateJob = $null
+try { $taskUpdateJob = Get-Content -LiteralPath (Join-Path $profileRoot 'update-job.json') -Raw -Encoding UTF8 | ConvertFrom-Json } catch { }
+if ($taskUpdateJob.status -in @('preparing','waiting-exit','starting')) {
+  foreach ($taskUpdatePid in @($taskUpdateJob.workerPid,$taskUpdateJob.parentPid)) {
+    if ($taskUpdatePid -gt 0 -and (Get-Process -Id $taskUpdatePid -ErrorAction SilentlyContinue)) { exit 0 }
+  }
+}
 $registration = Join-Path $profileRoot 'install.json'
 if (-not (Test-Path -LiteralPath $registration)) { throw '有数尚未完成首次设置，请让 Agent 帮你安装并打开配置引导。' }
 $installation = Get-Content -LiteralPath $registration -Raw -Encoding UTF8 | ConvertFrom-Json

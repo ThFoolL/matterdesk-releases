@@ -21,6 +21,11 @@ function Get-MatterDeskSetupStatus {
   $taskInstalledRoot = Join-Path $env:LOCALAPPDATA ('MatterDeskApp\' + $taskComponent.version)
   $taskRegistered = $null
   try { $taskRegistered = Get-Content -LiteralPath (Join-Path $taskDataDirectory 'install.json') -Raw -Encoding UTF8 | ConvertFrom-Json } catch { }
+  if ($taskRegistered.executable -and (Test-Path -LiteralPath $taskRegistered.executable)) {
+    $taskActualRoot = Split-Path -Parent $taskRegistered.executable
+    $taskActualVersion = Split-Path -Leaf $taskActualRoot
+    if ($taskActualVersion -match '^\d+\.\d+\.\d+(-[a-zA-Z0-9.-]+)?$' -and (Compare-MatterDeskVersion $taskActualVersion $taskComponent.version) -ge 0 -and (Test-Path -LiteralPath (Join-Path $taskActualRoot 'runtime\node.exe'))) { return @{version=$taskActualVersion;running=$false;stage='ready';message='有数已安装，可以打开悬浮窗。'} }
+  }
   $taskInstalled = $taskRegistered.executable -eq (Join-Path $taskInstalledRoot 'MatterDesk.exe') -and (Test-Path -LiteralPath (Join-Path $taskInstalledRoot 'MatterDesk.exe')) -and (Test-Path -LiteralPath (Join-Path $taskInstalledRoot 'runtime\node.exe'))
   if ($taskStatus -and $taskStatus.version -eq $taskComponent.version) {
     if ($taskStatus.stage -ne 'ready' -or ($taskRegistered.executable -eq (Join-Path $taskInstalledRoot 'MatterDesk.exe') -and (Test-Path -LiteralPath (Join-Path $taskInstalledRoot 'MatterDesk.exe')) -and (Test-Path -LiteralPath (Join-Path $taskInstalledRoot 'runtime\node.exe')))) { return $taskStatus }
