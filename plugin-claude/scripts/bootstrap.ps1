@@ -7,6 +7,25 @@ $OutputEncoding = [Text.UTF8Encoding]::new($false)
 $taskDataDirectory = Get-MatterDeskDataDirectory
 $taskStatusFile = Join-Path $taskDataDirectory 'component-install.json'
 $taskComponent = Get-Content -LiteralPath (Join-Path $PSScriptRoot '..\component.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+function New-MatterDeskReadyStatus([string]$Version, $Previous) {
+  $taskReady = @{version=$Version;running=$false;stage='ready';message='有数已安装，可以打开悬浮窗继续设置或查看待办。'}
+  # The registered executable can be healthy after an interrupted final probe.
+  # Reconcile only this cache, never an active or newer installation attempt.
+  $taskPreviousHasVersion = $Previous.version -match '^\d+\.\d+\.\d+(-[a-zA-Z0-9.-]+)?$'
+  if ($Previous -and ($Previous.stage -ne 'ready' -or $Previous.version -ne $Version) -and (-not $taskPreviousHasVersion -or (Compare-MatterDeskVersion $Previous.version $Version) -le 0)) {
+    $taskCacheLock = $null
+    try {
+      $taskCacheLock = [IO.File]::Open((Join-Path $taskDataDirectory 'component-install.lock'),'OpenOrCreate','ReadWrite','None')
+      $taskLatest = Get-Content -LiteralPath $taskStatusFile -Raw -Encoding UTF8 | ConvertFrom-Json
+      $taskLatestHasVersion = $taskLatest.version -match '^\d+\.\d+\.\d+(-[a-zA-Z0-9.-]+)?$'
+      if (-not $taskLatest.running -and (-not $taskLatestHasVersion -or (Compare-MatterDeskVersion $taskLatest.version $Version) -le 0)) {
+        $taskReady.updatedAt = [DateTime]::UtcNow.ToString('o')
+        [IO.File]::WriteAllText($taskStatusFile,($taskReady | ConvertTo-Json -Compress),[Text.UTF8Encoding]::new($false))
+      }
+    } catch { } finally { if ($taskCacheLock) { $taskCacheLock.Dispose() } }
+  }
+  return $taskReady
+}
 function Get-MatterDeskSetupStatus {
   $taskStatus = $null
   try { $taskStatus = Get-Content -LiteralPath $taskStatusFile -Raw -Encoding UTF8 | ConvertFrom-Json } catch { }
@@ -16,7 +35,7 @@ function Get-MatterDeskSetupStatus {
       $taskStatus.running = $false
       $taskStatus.stage = 'interrupted'
       $taskStatus.message = '安装已中断，可以让 Agent 重新安装；已保存的事项和设置会保留。'
-    }
+    } else { return $taskStatus }
   }
   $taskInstalledRoot = Join-Path $env:LOCALAPPDATA ('MatterDeskApp\' + $taskComponent.version)
   $taskRegistered = $null
@@ -24,13 +43,13 @@ function Get-MatterDeskSetupStatus {
   if ($taskRegistered.executable -and (Test-Path -LiteralPath $taskRegistered.executable)) {
     $taskActualRoot = Split-Path -Parent $taskRegistered.executable
     $taskActualVersion = Split-Path -Leaf $taskActualRoot
-    if ($taskActualVersion -match '^\d+\.\d+\.\d+(-[a-zA-Z0-9.-]+)?$' -and (Compare-MatterDeskVersion $taskActualVersion $taskComponent.version) -ge 0 -and (Test-Path -LiteralPath (Join-Path $taskActualRoot 'runtime\node.exe'))) { return @{version=$taskActualVersion;running=$false;stage='ready';message='有数已安装，可以打开悬浮窗。'} }
+    if ($taskActualVersion -match '^\d+\.\d+\.\d+(-[a-zA-Z0-9.-]+)?$' -and (Compare-MatterDeskVersion $taskActualVersion $taskComponent.version) -ge 0 -and (Test-Path -LiteralPath (Join-Path $taskActualRoot 'runtime\node.exe'))) { return New-MatterDeskReadyStatus $taskActualVersion $taskStatus }
   }
   $taskInstalled = $taskRegistered.executable -eq (Join-Path $taskInstalledRoot 'MatterDesk.exe') -and (Test-Path -LiteralPath (Join-Path $taskInstalledRoot 'MatterDesk.exe')) -and (Test-Path -LiteralPath (Join-Path $taskInstalledRoot 'runtime\node.exe'))
   if ($taskStatus -and $taskStatus.version -eq $taskComponent.version) {
     if ($taskStatus.stage -ne 'ready' -or ($taskRegistered.executable -eq (Join-Path $taskInstalledRoot 'MatterDesk.exe') -and (Test-Path -LiteralPath (Join-Path $taskInstalledRoot 'MatterDesk.exe')) -and (Test-Path -LiteralPath (Join-Path $taskInstalledRoot 'runtime\node.exe')))) { return $taskStatus }
   }
-  if ($taskInstalled) { return @{version=$taskComponent.version;running=$false;stage='ready';message='有数已安装，可以打开悬浮窗继续设置或查看待办。'} }
+  if ($taskInstalled) { return New-MatterDeskReadyStatus $taskComponent.version $taskStatus }
   return @{ version=$taskComponent.version; running=$false; stage='not_installed'; message='尚未安装本版有数。可以让 Agent 帮你安装，完成后按窗口引导填写关注范围并连接飞书。' }
 }
 function Start-MatterDeskComponentInstall {
